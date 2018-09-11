@@ -1,17 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 
-GPIO.setmode(GPIO.BOARD)
-
-kontrolPinleri = [7,11,13,15]
-
-motor_pinlerini_ayarla(kontrolPinleri)
-
-tur = float(input("Tur sayısını giriniz (negatif->ters yön): "))
-bekleme = int(input("Bekleme süresini giriniz (ms): "))
-
-GPIO_temizle()
-
+# -----------------------------------FONKSIYONLAR----------------------------------
 # Motor pinlerini ayarlar
 def motor_pinlerini_ayarla(motorPinleri):
   for pin in motorPinleri:
@@ -22,9 +12,9 @@ def motor_pinlerini_ayarla(motorPinleri):
 # turSayisi float olabilir.
 # beklemeSuresi milisaniye cinsindendir.
 # motorPinleri 4 tane motor pininin listesidir.
-def tam_tur_dön(turSayisi, beklemeSuresi, motorPinleri):
+def tam_tur_don(turSayisi, beklemeSuresi, motorPinleri):
   beklemeSuresi = beklemeSuresi * 0.001
-  if(bekleme < 0):	bekleme *= -1
+  if(beklemeSuresi < 0):  beklemeSuresi *= -1
 
   yarimAdimDizisi = [
     [1,0,0,0],
@@ -49,3 +39,18 @@ def tam_tur_dön(turSayisi, beklemeSuresi, motorPinleri):
 
 def GPIO_temizle():
   GPIO.cleanup()
+# -----------------------------------FONKSIYONLAR----------------------------------
+
+
+GPIO.setmode(GPIO.BOARD)
+
+kontrolPinleri = [7,11,13,15]
+
+motor_pinlerini_ayarla(kontrolPinleri)
+
+tur = float(input("Tur sayısını giriniz (negatif->ters yön): "))
+bekleme = int(input("Bekleme süresini giriniz (ms): "))
+tam_tur_don(tur, bekleme, kontrolPinleri)
+
+GPIO_temizle()
+

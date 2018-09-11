@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import dc_motorlar as dc
+import gemi_hareket as gh
 import yardimci as yar
 
 
@@ -9,9 +9,9 @@ def goruntuye_gore_hareket(img, merkez):
 	genislik = img.shape[1]
 	yukseklik = img.shape[0]
 	if(merkez[0] < genislik/2):
-		dc.sola_don()
+		gh.sola_don()
 	else:
-		dc.saga_don()
+		gh.saga_don()
 
 
 
