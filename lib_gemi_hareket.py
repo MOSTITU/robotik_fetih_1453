@@ -1,4 +1,4 @@
-import dc_motor as dc
+import lib_dc_motor as dc
 
 solMotorPins = [8,10,12]
 sagMotorPins = [11,13,15]

@@ -3,16 +3,18 @@ import numpy as np
 #import lib_gemi_hareket as gh
 import lib_cv_yardimci as yar
 
-"""
+
 def goruntuye_gore_hareket(img, merkez):
 
 	genislik = img.shape[1]
 	yukseklik = img.shape[0]
 	if(merkez[0] < genislik/2):
-		gh.sola_don()
+		print("Sola dön")
+		#gh.sola_don()
 	else:
-		gh.saga_don()
-"""
+		print("Sağ dön")
+		#gh.saga_don()
+
 
 
 # kamera açılır, kamera açılamazsa video açılır
@@ -57,7 +59,7 @@ while True:
 			enBuyuk["kose"] = [x,y]
 			enBuyuk["kenar"] = [w,h]
 
-		#goruntuye_gore_hareket(resim, enBuyuk['merkez'])
+		goruntuye_gore_hareket(resim, enBuyuk['merkez'])
 
 
 	cv2.imshow("Video", resim)

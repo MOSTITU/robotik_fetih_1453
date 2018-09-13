@@ -17,10 +17,9 @@ if(secenek == 1):
 
 	# İlk iki pin ileri-geri'yi yönetiyor
 	# Üçüncü pin motorun çalışıp çalışmadığını
-	motorA = [16,18,22]
+	motorA = [8,10,12]
 
 	dc.pin_ayarla(motorA)
-	dc.gucu_ayarla(motorA,1)
 
 	for i in range(1,99):
 		dc.gucu_degistir(motorA, i)
@@ -36,7 +35,7 @@ if(secenek == 1):
 	 
 	GPIO.cleanup()
 
-elif(secenek = 2):
+elif(secenek == 2):
 	print("Mesafe Sensörü seçildi. 15 sn HC-SR04 Mesafe Sensörü örnek çalışma başlıyor...")
 	
 	import RPi.GPIO as GPIO
@@ -54,8 +53,7 @@ elif(secenek = 2):
 		print ("Olculuyor...")
 		time.sleep(1)
 
-		sure = ms.dalga_git_gel(TRIG, ECHO)
-		mesafe = ms.mesafe_hesapla(sure)
+		mesafe = ms.hizli_hesapla()
 
 
 		if mesafe < 2:
@@ -67,7 +65,7 @@ elif(secenek = 2):
 
 	GPIO.cleanup()
 
-elif(secenek = 3):
+elif(secenek == 3):
 	print("Gemi Hareket modülü seçildi. Gemi Hareketleri örnek çalışma başlıyor...")
 	
 	import RPi.GPIO as GPIO
@@ -84,7 +82,7 @@ elif(secenek = 3):
 	t.sleep(5)
 
 	print("5 sn tam gaz sola dön...")
-	gemi.sola_don():
+	gemi.sola_don()
 	t.sleep(5)
 
 	print("5 sn tam gaz sağa dön...")
@@ -98,9 +96,9 @@ elif(secenek = 3):
 	print("Motorlar kapatiliyor...")
 	gemi.dur()
 
-	GPIO.sleanup()
+	GPIO.cleanup()
 
-elif(secenek = 4):
+elif(secenek == 4):
 	print("Step Motor seçildi. Step Motor örnek çalışma başlıyor...")
 
 	import RPi.GPIO as GPIO
@@ -108,7 +106,7 @@ elif(secenek = 4):
 
 	GPIO.setmode(GPIO.BOARD)
 
-	kontrolPinleri = [7,11,13,15],
+	kontrolPinleri = [31,33,35,37]
 	step.motor_pinlerini_ayarla(kontrolPinleri)
 
 	tur = float(input("Tur sayısını giriniz (negatif->ters yön): "))
