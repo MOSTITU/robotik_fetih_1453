@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
-import gemi_hareket as gh
-import yardimci as yar
+#import lib_gemi_hareket as gh
+import lib_cv_yardimci as yar
 
-
+"""
 def goruntuye_gore_hareket(img, merkez):
 
 	genislik = img.shape[1]
@@ -12,12 +12,14 @@ def goruntuye_gore_hareket(img, merkez):
 		gh.sola_don()
 	else:
 		gh.saga_don()
-
+"""
 
 
 # kamera açılır, kamera açılamazsa video açılır
-video = cv2.VideoCapture(0)
+video = cv2.VideoCapture(1)
 if not video.isOpened():
+	video = cv2.VideoCapture(0)
+elif not video.isOpened():
 	video = cv2.VideoCapture("./Medya/smile.mp4")
 
 
@@ -55,7 +57,7 @@ while True:
 			enBuyuk["kose"] = [x,y]
 			enBuyuk["kenar"] = [w,h]
 
-		goruntuye_gore_hareket(resim, enBuyuk['merkez'])
+		#goruntuye_gore_hareket(resim, enBuyuk['merkez'])
 
 
 	cv2.imshow("Video", resim)
