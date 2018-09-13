@@ -24,4 +24,4 @@ def durdur(pinler):
 
 # guc -> 0-100 arasi olacak
 def gucu_degistir(pinler, guc):
-	pwm(pinler).ChangeDutyCycle(guc)
+	GPIO.PWM(pinler[2],100).ChangeDutyCycle(guc)
