@@ -4,7 +4,7 @@ from time import sleep
 def pin_ayarla(pinler):
 	for pin in pinler:
 		GPIO.setup(pin,GPIO.OUT)
-	GPIO.PWM(pinler[2],100).start(0)
+	GPIO.PWM(pinler[2],100).start(100)
 
 # pinler -> 3 elemanlı liste
 def ileri(pinler):

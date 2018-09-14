@@ -17,21 +17,22 @@ if(secenek == 1):
 
 	# İlk iki pin ileri-geri'yi yönetiyor
 	# Üçüncü pin motorun çalışıp çalışmadığını
-	motorA = [8,10,12]
+	motorA = [11,13,15]
 
 	dc.pin_ayarla(motorA)
 
-	for i in range(1,99):
-		dc.gucu_degistir(motorA, i)
-		dc.ileri(motorA)
-		sleep(0.1)
 
-	for i in range(99,1):
-		dc.gucu_degistir(motorA, i)
-		dc.ileri(motorA)
-		sleep(0.1)
+	dc.gucu_degistir(motorA, 45)
+	dc.ileri(motorA)
+	sleep(3)
+	dc.durdur(motorA)
+	print("hızlan")
+	dc.gucu_degistir(motorA, 100)
+	dc.ileri(motorA)
+	sleep(3)
+	
 
-	dc.durdur()
+	dc.durdur(motorA)
 	 
 	GPIO.cleanup()
 
