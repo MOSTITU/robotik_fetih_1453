@@ -1,7 +1,7 @@
 import cv2
 # import lib_gemi_hareket as gh
 import lib_cv_yardimci as yar
-
+import os
 
 def goruntuye_gore_hareket(img, merkez):
     genislik = img.shape[1]
@@ -15,14 +15,20 @@ def goruntuye_gore_hareket(img, merkez):
 
 
 # kamera açılır, kamera açılamazsa video açılır
-video = cv2.VideoCapture(0)
-if not video.isOpened():
-    video = cv2.VideoCapture(1)
-if not video.isOpened():
-    video = cv2.VideoCapture("./Medya/smile.mp4")
+kamera = cv2.VideoCapture(0)
+if not kamera.isOpened():
+    kamera = cv2.VideoCapture(1)
+if not kamera.isOpened():
+    kamera = cv2.VideoCapture("./Medya/smile.mp4")
+
+kayitSayisi = int(len(os.listdir('./Medya/Kayitlar')) / 2)
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+temizKayit = cv2.VideoWriter('./Medya/Kayitlar/temizKayit'+str(kayitSayisi)+'.avi', fourcc, 10.0, (640, 480))
+islenmisKayit = cv2.VideoWriter('./Medya/Kayitlar/islenmisKayit'+str(kayitSayisi)+'.avi', fourcc, 10.0, (340, 220))
 
 while True:
-    _, resim = video.read()
+    _, resim = kamera.read()
+    temizKayit.write(resim)
     # Ayna etkisi
     resim = cv2.flip(resim, 1)
     resim = cv2.resize(resim, (340, 220))
@@ -59,7 +65,12 @@ while True:
 
         goruntuye_gore_hareket(resim, enBuyuk['merkez'])
 
+    islenmisKayit.write(resim)
     cv2.imshow("Video", resim)
-
-    if cv2.waitKey(10) == 27:
+    if cv2.waitKey(20) == 27:
         break
+
+kamera.release()
+temizKayit.release()
+islenmisKayit.release()
+cv2.destroyAllWindows()
