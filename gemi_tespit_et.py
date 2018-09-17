@@ -6,18 +6,18 @@ import os
 def goruntuye_gore_hareket(img, merkez):
     genislik = img.shape[1]
     yukseklik = img.shape[0]
-    if merkez[0] < genislik / 2:
+    if merkez[0] < genislik / 2 - 20:
         print("Sola dön")
         # gh.sola_don()
-    else:
+    elif merkez[0] > genislik / 2 + 20:
         print("Sağ dön")
         # gh.saga_don()
 
 
 # kamera açılır, kamera açılamazsa video açılır
-kamera = cv2.VideoCapture(0)
+kamera = cv2.VideoCapture(1)
 if not kamera.isOpened():
-    kamera = cv2.VideoCapture(1)
+    kamera = cv2.VideoCapture(0)
 if not kamera.isOpened():
     kamera = cv2.VideoCapture("./Medya/smile.mp4")
 
@@ -33,7 +33,7 @@ while True:
     resim = cv2.flip(resim, 1)
     resim = cv2.resize(resim, (340, 220))
 
-    maskeSon = yar.maske_olustur(resim, yar.renk_siniri["mavi2"], yar.cekirdek)
+    maskeSon = yar.maske_olustur(resim, yar.renk_siniri["yesil"], yar.cekirdek)
 
     alanlar = yar.cerceve_ciz(resim, maskeSon)
 
