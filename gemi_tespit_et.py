@@ -1,28 +1,36 @@
 import cv2
-# import lib_gemi_hareket as gh
+import lib_gemi_hareket as gh
 import lib_cv_yardimci as yar
 import os
+import RPi.GPIO as GPIO
 
 def goruntuye_gore_hareket(img, cisim):
     genislik = img.shape[1]
     yukseklik = img.shape[0]
     if cisim["alan"] < 250:
+        print("Dur")
+        gh.dur()
         return False
 
     print("En büyük alan: ", cisim["alan"])
 
     if cisim["merkez"][0] < genislik / 2 - 20:
         print("Sola dön")
-        # gh.sola_don()
+        gh.sola_don()
     elif cisim["merkez"][0] > genislik / 2 + 20:
         print("Sağ dön")
-        # gh.saga_don()
-    else:
+        gh.saga_don()
+    elif cisim["merkez"][0] <= genislik / 2 + 20 and cisim["merkez"][0] >= genislik / 2 - 20:
         print("ileri git")
-        # gh.ileri()
-
+        gh.ileri()
+    else:
+        print("Dur")
+        gh.dur()
     return True
 
+
+GPIO.setmode(GPIO.BOARD)
+gh.motorlari_ayarla()
 # kamera açılır, kamera açılamazsa video açılır
 kamera = cv2.VideoCapture(1)
 if not kamera.isOpened():

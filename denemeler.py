@@ -17,7 +17,7 @@ if(secenek == 1):
 
 	# İlk iki pin ileri-geri'yi yönetiyor
 	# Üçüncü pin motorun çalışıp çalışmadığını
-	motorA = [11,13,15]
+	motorA = [8,10,12]
 
 	dc.pin_ayarla(motorA)
 
