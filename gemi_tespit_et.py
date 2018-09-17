@@ -1,20 +1,27 @@
 import cv2
-import lib_gemi_hareket as gh
+# import lib_gemi_hareket as gh
 import lib_cv_yardimci as yar
 import os
 
-def goruntuye_gore_hareket(img, merkez):
+def goruntuye_gore_hareket(img, cisim):
     genislik = img.shape[1]
     yukseklik = img.shape[0]
-    if merkez[0] < genislik / 2 - 20:
+    if cisim["alan"] < 250:
+        return False
+
+    print("En büyük alan: ", cisim["alan"])
+
+    if cisim["merkez"][0] < genislik / 2 - 20:
         print("Sola dön")
-        gh.sola_don()
-    elif merkez[0] > genislik / 2 + 20:
+        # gh.sola_don()
+    elif cisim["merkez"][0] > genislik / 2 + 20:
         print("Sağ dön")
-        gh.saga_don()
+        # gh.saga_don()
     else:
         print("ileri git")
-        gh.ileri()
+        # gh.ileri()
+
+    return True
 
 # kamera açılır, kamera açılamazsa video açılır
 kamera = cv2.VideoCapture(1)
@@ -32,7 +39,7 @@ while True:
     _, resim = kamera.read()
     temizKayit.write(resim)
     # Ayna etkisi
-    resim = cv2.flip(resim, 1)
+    #resim = cv2.flip(resim, 1)
     resim = cv2.resize(resim, (340, 220))
 
     maskeSon = yar.maske_olustur(resim, yar.renk_siniri["yesil"], yar.cekirdek)
@@ -48,7 +55,7 @@ while True:
     }
 
     for i, alan in enumerate(alanlar):
-        print("Tespit edilen cisim sayisi:", len(alanlar))
+        # print("Tespit edilen cisim sayisi:", len(alanlar))
         # cismi dikdörtgen halinde sol üst köşe ve kenar uzunluklarını alma
         x, y, w, h = cv2.boundingRect(alan)
 
@@ -65,7 +72,7 @@ while True:
             enBuyuk["kose"] = [x, y]
             enBuyuk["kenar"] = [w, h]
 
-        goruntuye_gore_hareket(resim, enBuyuk['merkez'])
+        goruntuye_gore_hareket(resim, enBuyuk)
 
     islenmisKayit.write(resim)
     cv2.imshow("Video", resim)
