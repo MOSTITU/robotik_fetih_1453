@@ -1,9 +1,9 @@
-# import lib_gemi_hareket as gh
+import lib_gemi_hareket as gh
 
 
 def cisim_bulamazsa():
     print("Cisim bulunamadı...")
-    # gh.dur()
+    gh.dur()
 
 
 def buyuk_cisim_bulamazsa():
@@ -20,12 +20,12 @@ def goruntuye_gore_hareket(img, cisim):
 
     if cisim["merkez"][0] < genislik / 2 - genislik / 16:
         print("Sola dön")
-        # gh.sola_don()
+        gh.sola_don()
     elif cisim["merkez"][0] > genislik / 2 + genislik / 16:
         print("Sağ dön")
-        # gh.saga_don()
+        gh.saga_don()
     elif genislik / 2 + genislik / 16 >= cisim["merkez"][0] >= genislik / 2 - genislik / 16:
         print("ileri git")
-        # gh.ileri()
+        gh.ileri()
     return True
 

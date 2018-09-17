@@ -2,14 +2,14 @@
 aynaEtkisi = False
 
 import cv2
-# import lib_gemi_hareket as gh
+import lib_gemi_hareket as gh
 import lib_cv_yardimci as yar
 import os
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import lib_tespit_sonrasi as ts
 
-# GPIO.setmode(GPIO.BOARD)
-# gh.motorlari_ayarla()
+GPIO.setmode(GPIO.BOARD)
+gh.motorlari_ayarla()
 
 # kamera açılır, kamera açılamazsa video açılır
 kamera = cv2.VideoCapture(1)
