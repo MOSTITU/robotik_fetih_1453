@@ -45,6 +45,31 @@ def cerceve_ciz(resim, maske):
     _, cerceveler, h = cv2.findContours(maske.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
     # Resme çerçeve çizme
-    cv2.drawContours(resim, cerceveler, -1, (255, 0, 0), 3)
+    cv2.drawContours(resim, cerceveler, -1, (0, 0, 255), 2)
 
     return cerceveler
+
+
+def en_buyugu_bul(alanlar):
+    enBuyuk = {
+        "alan": 0,
+        "merkez": (0, 0),
+        "sira": 0,
+        "solUstKose": (0, 0),
+        "sagAltKose": (0, 0),
+        "kenar": (0, 0)
+    }
+
+    for i, alan in enumerate(alanlar):
+        # cismi dikdörtgen halinde sol üst köşe ve kenar uzunluklarını alma
+        x, y, w, h = cv2.boundingRect(alan)
+
+        if cv2.contourArea(alan) > enBuyuk["alan"]:
+            enBuyuk["alan"] = cv2.contourArea(alan)
+            enBuyuk["merkez"] = [x + w / 2, y + h / 2]
+            enBuyuk["sira"] = i
+            enBuyuk["solUstKose"] = [x, y]
+            enBuyuk["sagAltKose"] = [x + w, y + h]
+            enBuyuk["kenar"] = [w, h]
+
+    return enBuyuk
