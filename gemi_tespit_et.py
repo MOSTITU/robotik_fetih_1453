@@ -1,5 +1,5 @@
 import cv2
-# import lib_gemi_hareket as gh
+import lib_gemi_hareket as gh
 import lib_cv_yardimci as yar
 import os
 
@@ -8,11 +8,13 @@ def goruntuye_gore_hareket(img, merkez):
     yukseklik = img.shape[0]
     if merkez[0] < genislik / 2 - 20:
         print("Sola dön")
-        # gh.sola_don()
+        gh.sola_don()
     elif merkez[0] > genislik / 2 + 20:
         print("Sağ dön")
-        # gh.saga_don()
-
+        gh.saga_don()
+    else:
+        print("ileri git")
+        gh.ileri()
 
 # kamera açılır, kamera açılamazsa video açılır
 kamera = cv2.VideoCapture(1)
