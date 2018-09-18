@@ -113,15 +113,15 @@ def kapiyi_tespit_et(alanlar):
     if sutun2['alan'] != 0:
         ret = True
 
-    if (sutun1['alan'] - sutun2['alan'] / sutun1['alan']) * 100 < 25:
-        yon = 0
-    # Fark çok büyükse o zaman yön belirle: -1 -> gemi kapının solunda, +1 -> gemi kapını sağında
-    elif sutun1['merkez'][0] < sutun2['merkez'][0]:
-        yon = -1
-    elif sutun1['merkez'][0] > sutun2['merkez'][0]:
-        yon = 1
-    else:
-        pass
+        if (sutun1['alan'] - sutun2['alan'] / sutun1['alan']) * 100 < 25:
+            yon = 0
+        # Fark çok büyükse o zaman yön belirle: -1 -> gemi kapının solunda, +1 -> gemi kapını sağında
+        elif sutun1['merkez'][0] < sutun2['merkez'][0]:
+            yon = -1
+        elif sutun1['merkez'][0] > sutun2['merkez'][0]:
+            yon = 1
+        else:
+            pass
 
     merkez = ((sutun1['merkez'][0] + sutun2['merkez'][0]) / 2, (sutun1['merkez'][1] + sutun2['merkez'][1]) / 2)
     return ret, merkez, yon, sutun1, sutun2

@@ -34,10 +34,10 @@ time.sleep(0.1)
 for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_video_port=True):
     # Resim karesinin piksellerini resim isimli bir degiskene yaz
     anaResim = resimKaresi.array
-    anaResim = cv2.resize(anaResim, (340, 220))
+    #anaResim = cv2.resize(anaResim, (340, 220))
+    anaResim = cv2.resize(anaResim, (640, 480))
 
     # gemiResim = anaResim.copy()
-    # gemiResim = cv2.resize(gemiResim, (340, 220))
     # gemiMaske = yar.maske_olustur(gemiResim, yar.renk_siniri["yesil"], yar.cekirdek)
     # gemiAlanlar = yar.cerceve_ciz(gemiResim, gemiMaske)
     # enBuyukGemi = yar.en_buyugu_bul(gemiAlanlar)
@@ -47,7 +47,6 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
     # ts.goruntuye_gore_hareket(gemiResim, enBuyukGemi)
 
     kapiResim = anaResim.copy()
-    kapiResim = cv2.resize(kapiResim, (340, 220))
     kapiMaske = yar.maske_olustur(kapiResim, yar.renk_siniri["yesil"], yar.cekirdek)
     kapiAlanlar = yar.cerceve_ciz(kapiResim, kapiMaske)
     _, kapiMerkez, kapiYon, s1, s2 = yar.kapiyi_tespit_et(kapiAlanlar)
@@ -56,9 +55,11 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
                   (s1["sagAltKose"][0], s1["sagAltKose"][1]), (255, 0, 0), 3)
     cv2.rectangle(kapiResim, (s2['solUstKose'][0], s2['solUstKose'][1]),
                   (s2["sagAltKose"][0], s2["sagAltKose"][1]), (255, 0, 0), 3)
-
+    
+    
     # cv2.imshow("Gemiler", gemiResim)
     cv2.imshow("Kapı", kapiResim)
+    cv2.imshow("Ana Resim", anaResim)
     resimBellegi.truncate(0)
     if cv2.waitKey(20) == 27:
         break
