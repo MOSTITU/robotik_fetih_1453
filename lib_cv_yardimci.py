@@ -8,7 +8,11 @@ renk_siniri = {
     "beyaz": [np.array([0, 0, 140]), np.array([256, 60, 256])],
     "sari": [np.array([5, 100, 100]), np.array([40, 255, 256])],
     "kirmizi": [np.array([160, 30, 30]), np.array([180, 255, 255])],
-    "mavi2": [np.array((80, 100, 70)), np.array((120, 180, 255))]
+    "mavi2": [np.array((80, 100, 70)), np.array((120, 180, 255))],
+    "gemi": [np.array([33, 88, 40]), np.array([102, 255, 255])],
+    "duvar": [np.array([5, 100, 100]), np.array([40, 255, 256])],
+    "kapi": [np.array([100, 60, 60]), np.array([140, 255, 255])],
+    "sur": [np.array([160, 30, 30]), np.array([180, 255, 255])]
 }
 
 # 33. Ders - Erosion, Dilation, Opening, Closing
