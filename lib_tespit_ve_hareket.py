@@ -10,18 +10,16 @@ def cisim_bulunamazsa():
     gh.dur()
 
 
-def goruntuye_gore_hareket(img, cisim):
+def goruntuye_gore_hareket(img, merkez):
     genislik = img.shape[1]
 
-    print("En büyük alan: ", cisim["alan"])
-
-    if cisim["merkez"][0] < genislik / 2 - genislik / 16:
+    if merkez[0] < genislik / 2 - genislik / 16:
         print("Sola dön")
         gh.sola_don()
-    elif cisim["merkez"][0] > genislik / 2 + genislik / 16:
+    elif merkez[0] > genislik / 2 + genislik / 16:
         print("Sağ dön")
         gh.saga_don()
-    elif genislik / 2 + genislik / 16 >= cisim["merkez"][0] >= genislik / 2 - genislik / 16:
+    elif genislik / 2 + genislik / 16 >= merkez[0] >= genislik / 2 - genislik / 16:
         print("ileri git")
         gh.ileri()
     return
@@ -36,7 +34,7 @@ def gemi_bul_ve_hareket_et(resim):
     cv2.rectangle(gemiResim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
                   (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
     if enBuyukGemi['alan'] > enKucukGemiAlani:
-        goruntuye_gore_hareket(gemiResim, enBuyukGemi)
+        goruntuye_gore_hareket(gemiResim, enBuyukGemi['merkez'])
     else:
         print("Gemi bulunamadı...")
         cisim_bulunamazsa()
@@ -59,6 +57,7 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
                   (s2["sagAltKose"][0], s2["sagAltKose"][1]), (255, 0, 0), 3)
 
     # TODO Görüntüye (kapıya) doğru hareket et
+    goruntuye_gore_hareket(kapiResim, kapiMerkez)
     # TODO tirman'ın durumuna göre banda tırman
 
     return kapiResim
