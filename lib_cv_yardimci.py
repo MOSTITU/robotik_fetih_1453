@@ -83,6 +83,7 @@ def en_buyugu_bul(alanlar):
 # yon = 0 -> kapının karşışında, yon = -1 -> kapının solunda, yon = 1 -> kapının sağında
 def kapiyi_tespit_et(alanlar):
     ret = False
+    merkez = (0, 0)
     yon = 0
 
     sutun1 = {
@@ -105,19 +106,27 @@ def kapiyi_tespit_et(alanlar):
             # cismi dikdörtgen halinde sol üst köşe ve kenar uzunluklarını alma
             x, y, w, h = cv2.boundingRect(alan)
             sutun2 = sutun1.copy()
-            sutun1["alan"] = cv2.contourArea(alan)
-            sutun1["merkez"] = [x + w / 2, y + h / 2]
-            sutun1["sira"] = i
-            sutun1["solUstKose"] = [x, y]
-            sutun1["sagAltKose"] = [x + w, y + h]
-            sutun1["kenar"] = [w, h]
+            sutun1['alan'] = cv2.contourArea(alan)
+            sutun1['merkez'] = [x + w / 2, y + h / 2]
+            sutun1['sira'] = i
+            sutun1['solUstKose'] = [x, y]
+            sutun1['sagAltKose'] = [x + w, y + h]
+            sutun1['kenar'] = [w, h]
 
-    # TODO Sutunların boyları ortalaması ile iki sutun arası mesafe aynı olmalı, yaklaşık bir orana göre False döndürülebilir Sütunlar arası farkın büyük olan sütuna oranının yüzde ile ifadesi %25'ten küçükse yön dümdüz
+    # Teoride karşıdan bakınca sütun boyu ile aradaki mesafe aynı olmalı. %50 hassaslık payı bıraktık.
+    # eğer sütun arası çok fazla ise o kapı değildir. Eğer sütun arası çok kısa ise yandan bakıyor olabilir.
+    ortSutunYuks = (sutun1['kenar'][1] + sutun2['kenar'][1]) / 2
+    sutunArasi = abs(sutun1['sagAltKose'][1] - sutun2['sagAltKose'][1])
+    if (sutunArasi - ortSutunYuks) / ortSutunYuks * 100 > 50:
+        return ret, merkez, yon, sutun1, sutun2
+
+    if sutun2['alan'] == 0:
+        return ret, merkez, yon, sutun1, sutun2
 
     if sutun2['alan'] != 0:
         ret = True
 
-        if (sutun1['alan'] - sutun2['alan'] / sutun1['alan']) * 100 < 25:
+        if (sutun1['alan'] - sutun2['alan'] / sutun1['alan']) * 100 < 30:
             yon = 0
         # Fark çok büyükse o zaman yön belirle: -1 -> gemi kapının solunda, +1 -> gemi kapını sağında
         elif sutun1['merkez'][0] < sutun2['merkez'][0]:

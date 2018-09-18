@@ -49,14 +49,16 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
     kapiResim = resim.copy()
     kapiMaske = yar.maske_olustur(kapiResim, yar.renk_siniri["kapi"], yar.cekirdek)
     kapiAlanlar = yar.cerceve_ciz(kapiResim, kapiMaske)
-    _, kapiMerkez, kapiYon, s1, s2 = yar.kapiyi_tespit_et(kapiAlanlar)
+    ret, kapiMerkez, kapiYon, s1, s2 = yar.kapiyi_tespit_et(kapiAlanlar)
+    if not ret:
+        return kapiResim
     # Sütunları dikdörtgen içine alma
     cv2.rectangle(kapiResim, (s1['solUstKose'][0], s1['solUstKose'][1]),
                   (s1["sagAltKose"][0], s1["sagAltKose"][1]), (255, 0, 0), 3)
     cv2.rectangle(kapiResim, (s2['solUstKose'][0], s2['solUstKose'][1]),
                   (s2["sagAltKose"][0], s2["sagAltKose"][1]), (255, 0, 0), 3)
 
-    # TODO Görüntüye (kapıya) doğru hareket et
+    # +++ TODO Görüntüye (kapıya) doğru hareket et için görüntünün gerçek kapı olup olmadığı kontrol edilecek // Sütun boyu - sutun arası mesafe kontrol edildi
     goruntuye_gore_hareket(kapiResim, kapiMerkez)
     # TODO tirman'ın durumuna göre banda tırman
 
