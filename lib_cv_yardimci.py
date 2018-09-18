@@ -112,14 +112,16 @@ def kapiyi_tespit_et(alanlar):
             sutun1['solUstKose'] = [x, y]
             sutun1['sagAltKose'] = [x + w, y + h]
             sutun1['kenar'] = [w, h]
+        elif cv2.contourArea(alan) > sutun2["alan"]:
+            x, y, w, h = cv2.boundingRect(alan)
+            sutun2['alan'] = cv2.contourArea(alan)
+            sutun2['merkez'] = [x + w / 2, y + h / 2]
+            sutun2['sira'] = i
+            sutun2['solUstKose'] = [x, y]
+            sutun2['sagAltKose'] = [x + w, y + h]
+            sutun2['kenar'] = [w, h]
 
-    # Teoride karşıdan bakınca sütun boyu ile aradaki mesafe aynı olmalı. %50 hassaslık payı bıraktık.
-    # eğer sütun arası çok fazla ise o kapı değildir. Eğer sütun arası çok kısa ise yandan bakıyor olabilir.
-    ortSutunYuks = (sutun1['kenar'][1] + sutun2['kenar'][1]) / 2
-    sutunArasi = abs(sutun1['sagAltKose'][1] - sutun2['sagAltKose'][1])
-    if (sutunArasi - ortSutunYuks) / ortSutunYuks * 100 > 50:
-        return ret, merkez, yon, sutun1, sutun2
-
+    # Eğer sutun2'nin alanı 0 ise kapı yok demektir. Kapıda 2 sütun olması gerekiyor
     if sutun2['alan'] == 0:
         return ret, merkez, yon, sutun1, sutun2
 
