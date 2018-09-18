@@ -1,20 +1,20 @@
-import picamera
+from picamera import PiCamera
 from picamera.array import PiRGBArray
 import time
 import cv2
-import lib_gemi_hareket as gh
+# import lib_gemi_hareket as gh
 import lib_cv_yardimci as yar
 import os
-import RPi.GPIO as GPIO
-import lib_tespit_sonrasi as ts
+# import RPi.GPIO as GPIO
+# import lib_tespit_sonrasi as ts
 
 
-GPIO.setmode(GPIO.BOARD)
-gh.motorlari_ayarla()
+# GPIO.setmode(GPIO.BOARD)
+# gh.motorlari_ayarla()
 
 
 # Kamera kutuphanesinden bir nesne al ve kamera degiskenine ata
-kamera = picamera()
+kamera = PiCamera()
 
 # # Kamera cozunurlugunu GENISLIKxUZUNLUK olarak ayarla
 # kamera.resolution = (GENISLIK, UZUNLUK)
@@ -48,13 +48,13 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
     # cismin etrafına dikdörtgen çizme
     cv2.rectangle(resim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
                   (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
-    ts.goruntuye_gore_hareket(resim, enBuyukGemi)
+    # ts.goruntuye_gore_hareket(resim, enBuyukGemi)
 
     cv2.imshow("Video", resim)
     if cv2.waitKey(20) == 27:
         break
 
 # GPIO cikislarini kapat
-GPIO.cleanup()
+# GPIO.cleanup()
 
 cv2.destroyAllWindows()
