@@ -20,7 +20,7 @@ cekirdek = {
 
 
 # Maske olusturur, son maske değerini döndürür
-def maske_olustur(resim, sinirlar, cekirdek):
+def maske_olustur(resim, sinirlar, incekirdek):
     altSinir, ustSinir = sinirlar
 
     # BGR -> HSV dönüşümü
@@ -30,12 +30,12 @@ def maske_olustur(resim, sinirlar, cekirdek):
     maske = cv2.inRange(resimHSV, altSinir, ustSinir)
 
     # morfoloji (morphology)
-    maskeAcik = cv2.morphologyEx(maske, cv2.MORPH_OPEN, cekirdek["acik"])
-    maskeKapali = cv2.morphologyEx(maskeAcik, cv2.MORPH_CLOSE, cekirdek["kapali"])
+    maskeAcik = cv2.morphologyEx(maske, cv2.MORPH_OPEN, incekirdek["acik"])
+    maskeKapali = cv2.morphologyEx(maskeAcik, cv2.MORPH_CLOSE, incekirdek["kapali"])
 
-    cv2.imshow("maskeKapali", maskeKapali)
-    cv2.imshow("maskeAcik", maskeAcik)
-    cv2.imshow("maske", maske)
+    # cv2.imshow("maskeKapali", maskeKapali)
+    # cv2.imshow("maskeAcik", maskeAcik)
+    # cv2.imshow("maske", maske)
 
     return maskeKapali
 
@@ -61,10 +61,9 @@ def en_buyugu_bul(alanlar):
     }
 
     for i, alan in enumerate(alanlar):
-        # cismi dikdörtgen halinde sol üst köşe ve kenar uzunluklarını alma
-        x, y, w, h = cv2.boundingRect(alan)
-
         if cv2.contourArea(alan) > enBuyuk["alan"]:
+            # cismi dikdörtgen halinde sol üst köşe ve kenar uzunluklarını alma
+            x, y, w, h = cv2.boundingRect(alan)
             enBuyuk["alan"] = cv2.contourArea(alan)
             enBuyuk["merkez"] = [x + w / 2, y + h / 2]
             enBuyuk["sira"] = i
@@ -73,3 +72,56 @@ def en_buyugu_bul(alanlar):
             enBuyuk["kenar"] = [w, h]
 
     return enBuyuk
+
+
+# ret değeri, merkez nokayı, geminin kapıya göre olan yönünü ve sütunları döner
+# ret = False -> Kapı bulunamadı, ret = True -> Kapı bulundu
+# yon = 0 -> kapının karşışında, yon = -1 -> kapının solunda, yon = 1 -> kapının sağında
+def kapiyi_tespit_et(alanlar):
+    ret = False
+    yon = 0
+
+    sutun1 = {
+        "alan": 0,
+        "merkez": (0, 0),
+        "sira": 0,
+        "solUstKose": (0, 0),
+        "sagAltKose": (0, 0),
+        "kenar": (0, 0)
+    }
+
+    sutun2 = sutun1.copy()
+
+    for i, alan in enumerate(alanlar):
+        # Cismin alanı 150'den küçükse onu kabul etme
+        if cv2.contourArea(alan) < 150:
+            continue
+
+        if cv2.contourArea(alan) > sutun1["alan"]:
+            # cismi dikdörtgen halinde sol üst köşe ve kenar uzunluklarını alma
+            x, y, w, h = cv2.boundingRect(alan)
+            sutun2 = sutun1.copy()
+            sutun1["alan"] = cv2.contourArea(alan)
+            sutun1["merkez"] = [x + w / 2, y + h / 2]
+            sutun1["sira"] = i
+            sutun1["solUstKose"] = [x, y]
+            sutun1["sagAltKose"] = [x + w, y + h]
+            sutun1["kenar"] = [w, h]
+
+    # TODO Sutunların boyları ortalaması ile iki sutun arası mesafe aynı olmalı, yaklaşık bir orana göre False döndürülebilir Sütunlar arası farkın büyük olan sütuna oranının yüzde ile ifadesi %25'ten küçükse yön dümdüz
+
+    if sutun2['alan'] != 0:
+        ret = True
+
+    if (sutun1['alan'] - sutun2['alan'] / sutun1['alan']) * 100 < 25:
+        yon = 0
+    # Fark çok büyükse o zaman yön belirle: -1 -> gemi kapının solunda, +1 -> gemi kapını sağında
+    elif sutun1['merkez'][0] < sutun2['merkez'][0]:
+        yon = -1
+    elif sutun1['merkez'][0] > sutun2['merkez'][0]:
+        yon = 1
+    else:
+        pass
+
+    merkez = ((sutun1['merkez'][0] + sutun2['merkez'][0]) / 2, (sutun1['merkez'][1] + sutun2['merkez'][1]) / 2)
+    return ret, merkez, yon, sutun1, sutun2
