@@ -49,6 +49,9 @@ while True:
     if cv2.waitKey(20) == 27:
         break
 
+# GPIO cikislarini kapat
+GPIO.cleanup()
+
 kamera.release()
 temizKayit.release()
 islenmisKayit.release()
