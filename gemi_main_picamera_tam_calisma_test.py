@@ -3,11 +3,8 @@ from picamera.array import PiRGBArray
 import time
 import cv2
 import lib_gemi_hareket as gh
-import lib_cv_yardimci as yar
-import os
 import RPi.GPIO as GPIO
 import lib_tespit_ve_hareket as th
-import datetime
 
 GPIO.setmode(GPIO.BOARD)
 gh.motorlari_ayarla()
@@ -15,9 +12,11 @@ gh.motorlari_ayarla()
 # Kamera kutuphanesinden bir nesne al ve kamera degiskenine ata
 kamera = PiCamera()
 
-# Kayıt çözünürlüğü
-cozunurluk = [640, 480]
-kamera.resolution = (cozunurluk[0], cozunurluk[1])
+# Kayıt/İşlem çözünürlüğü
+kayitCozunurlugu = [640, 480]
+islemCozunurlugu = [340, 220]
+kamera.resolution = (kayitCozunurlugu[0], kayitCozunurlugu[1])
+
 # Kameranin saniyedeki resim sayisini 50 olarak ayarla
 kamera.framerate = 50
 
@@ -25,19 +24,19 @@ kamera.framerate = 50
 # kamera.vflip = True
 
 # Resimleri tutmak icin bellekte yer ac
-resimBellegi = PiRGBArray(kamera, size=(cozunurluk[0], cozunurluk[1]))
+resimBellegi = PiRGBArray(kamera, size=(kayitCozunurlugu[0], kayitCozunurlugu[1]))
 
 # Kameranin hazir olmasi icin biraz bekle
 time.sleep(0.1)
 
 # Video kaydı için
-kayitID = time.strftime("%Y-%m-%d-%H-%M")
+kayitTime = time.strftime("%Y-%m-%d-%H-%M")
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-temizKayit = cv2.VideoWriter('./Medya/Kayitlar/temizKayit' + kayitID + '.avi', fourcc, 10.0, (640, 480))
-duvarKayit = cv2.VideoWriter('./Medya/Kayitlar/duvarKayit' + kayitID + '.avi', fourcc, 10.0, (340, 220))
-gemiKayit = cv2.VideoWriter('./Medya/Kayitlar/gemiKayit' + kayitID + '.avi', fourcc, 10.0, (340, 220))
-kapiKayit = cv2.VideoWriter('./Medya/Kayitlar/kapiKayit' + kayitID + '.avi', fourcc, 10.0, (340, 220))
-surKayit = cv2.VideoWriter('./Medya/Kayitlar/surKayit' + kayitID + '.avi', fourcc, 10.0, (340, 220))
+temizKayit = cv2.VideoWriter('./Medya/Kayitlar/' + kayitTime + 'temizKayit.avi', fourcc, 10.0, (kayitCozunurlugu[0], kayitCozunurlugu[1]))
+duvarKayit = cv2.VideoWriter('./Medya/Kayitlar/' + kayitTime + 'duvarKayit.avi', fourcc, 10.0, (islemCozunurlugu[0], islemCozunurlugu[1]))
+gemiKayit = cv2.VideoWriter('./Medya/Kayitlar/' + kayitTime + 'gemiKayit.avi', fourcc, 10.0, (islemCozunurlugu[0], islemCozunurlugu[1]))
+kapiKayit = cv2.VideoWriter('./Medya/Kayitlar/' + kayitTime + 'kapiKayit.avi', fourcc, 10.0, (islemCozunurlugu[0], islemCozunurlugu[1]))
+surKayit = cv2.VideoWriter('./Medya/Kayitlar/' + kayitTime + 'surKayit.avi', fourcc, 10.0, (islemCozunurlugu[0], islemCozunurlugu[1]))
 
 # Gemi toplama/boşaltma işlemi için
 gemiTopla = True
@@ -47,7 +46,8 @@ gemiBosalt = False
 for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_video_port=True):
     # Resim karesinin piksellerini resim isimli bir degiskene yaz
     anaResim = resimKaresi.array
-    anaResim = cv2.resize(anaResim, (340, 220))
+    temizKayit.write(anaResim)
+    anaResim = cv2.resize(anaResim, (islemCozunurlugu[0], islemCozunurlugu[1]))
 
     if gemiTopla:
         gemiResim = th.gemi_bul_ve_hareket_et(anaResim)
@@ -61,7 +61,6 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
 
     duvarResim = th.duvar_bul_ve_carpma(anaResim)
 
-    temizKayit.write(anaResim)
     cv2.imshow("Temiz Görüntü", anaResim)
     duvarKayit.write(duvarResim)
     cv2.imshow("Duvarlar", duvarResim)
