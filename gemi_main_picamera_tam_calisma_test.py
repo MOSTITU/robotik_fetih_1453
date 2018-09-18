@@ -6,8 +6,8 @@ import lib_gemi_hareket as gh
 import lib_cv_yardimci as yar
 import os
 import RPi.GPIO as GPIO
-import lib_tespit_sonrasi as ts
 import lib_tespit_ve_hareket as th
+import datetime
 
 GPIO.setmode(GPIO.BOARD)
 gh.motorlari_ayarla()
@@ -15,6 +15,9 @@ gh.motorlari_ayarla()
 # Kamera kutuphanesinden bir nesne al ve kamera degiskenine ata
 kamera = PiCamera()
 
+# Kayıt çözünürlüğü
+cozunurluk = [640, 480]
+kamera.resolution = (cozunurluk[0], cozunurluk[1])
 # Kameranin saniyedeki resim sayisini 50 olarak ayarla
 kamera.framerate = 50
 
@@ -22,11 +25,21 @@ kamera.framerate = 50
 # kamera.vflip = True
 
 # Resimleri tutmak icin bellekte yer ac
-resimBellegi = PiRGBArray(kamera)
+resimBellegi = PiRGBArray(kamera, size=(cozunurluk[0], cozunurluk[1]))
 
 # Kameranin hazir olmasi icin biraz bekle
 time.sleep(0.1)
 
+# Video kaydı için
+kayitID = time.strftime("%Y-%m-%d-%H-%M")
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+temizKayit = cv2.VideoWriter('./Medya/Kayitlar/temizKayit' + kayitID + '.avi', fourcc, 10.0, (640, 480))
+duvarKayit = cv2.VideoWriter('./Medya/Kayitlar/duvarKayit' + kayitID + '.avi', fourcc, 10.0, (340, 220))
+gemiKayit = cv2.VideoWriter('./Medya/Kayitlar/gemiKayit' + kayitID + '.avi', fourcc, 10.0, (340, 220))
+kapiKayit = cv2.VideoWriter('./Medya/Kayitlar/kapiKayit' + kayitID + '.avi', fourcc, 10.0, (340, 220))
+surKayit = cv2.VideoWriter('./Medya/Kayitlar/surKayit' + kayitID + '.avi', fourcc, 10.0, (340, 220))
+
+# Gemi toplama/boşaltma işlemi için
 gemiTopla = True
 gemiBosalt = False
 
@@ -36,34 +49,21 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
     anaResim = resimKaresi.array
     anaResim = cv2.resize(anaResim, (340, 220))
 
-    # gemiResim = anaResim.copy()
-    # gemiMaske = yar.maske_olustur(gemiResim, yar.renk_siniri["yesil"], yar.cekirdek)
-    # gemiAlanlar = yar.cerceve_ciz(gemiResim, gemiMaske)
-    # enBuyukGemi = yar.en_buyugu_bul(gemiAlanlar)
-    # # cismin etrafına dikdörtgen çizme
-    # cv2.rectangle(gemiResim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
-    #               (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
-    # ts.goruntuye_gore_hareket(gemiResim, enBuyukGemi)
     if gemiTopla:
         gemiResim = th.gemi_bul_ve_hareket_et(anaResim)
+        gemiKayit.write(gemiResim)
         cv2.imshow("Gemiler", gemiResim)
 
-    # kapiResim = anaResim.copy()
-    # kapiMaske = yar.maske_olustur(kapiResim, yar.renk_siniri["yesil"], yar.cekirdek)
-    # kapiAlanlar = yar.cerceve_ciz(kapiResim, kapiMaske)
-    # _, kapiMerkez, kapiYon, s1, s2 = yar.kapiyi_tespit_et(kapiAlanlar)
-    # # Sütunları dikdörtgen içine alma
-    # cv2.rectangle(kapiResim, (s1['solUstKose'][0], s1['solUstKose'][1]),
-    #               (s1["sagAltKose"][0], s1["sagAltKose"][1]), (255, 0, 0), 3)
-    # cv2.rectangle(kapiResim, (s2['solUstKose'][0], s2['solUstKose'][1]),
-    #               (s2["sagAltKose"][0], s2["sagAltKose"][1]), (255, 0, 0), 3)
     if gemiBosalt:
         kapiResim = th.kapi_bul_ve_hareket_et(anaResim)
+        kapiKayit.write(kapiResim)
         cv2.imshow("Kapı", kapiResim)
 
     duvarResim = th.duvar_bul_ve_carpma(anaResim)
 
+    temizKayit.write(anaResim)
     cv2.imshow("Temiz Görüntü", anaResim)
+    duvarKayit.write(duvarResim)
     cv2.imshow("Duvarlar", duvarResim)
 
     resimBellegi.truncate(0)
@@ -73,4 +73,9 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
 # GPIO cikislarini kapat
 GPIO.cleanup()
 
+temizKayit.release()
+duvarKayit.release()
+gemiKayit.release()
+kapiKayit.release()
+surKayit.release()
 cv2.destroyAllWindows()
