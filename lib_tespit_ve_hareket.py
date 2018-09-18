@@ -1,6 +1,31 @@
 import cv2
 import lib_cv_yardimci as yar
 import lib_tespit_sonrasi as ts
+import lib_gemi_hareket as gh
+
+enKucukGemiAlani = 250
+
+
+def cisim_bulunamazsa():
+    # TODO cisim bulunamazsa ne yapılacak?
+    gh.dur()
+
+
+def goruntuye_gore_hareket(img, cisim):
+    genislik = img.shape[1]
+
+    print("En büyük alan: ", cisim["alan"])
+
+    if cisim["merkez"][0] < genislik / 2 - genislik / 16:
+        print("Sola dön")
+        gh.sola_don()
+    elif cisim["merkez"][0] > genislik / 2 + genislik / 16:
+        print("Sağ dön")
+        gh.saga_don()
+    elif genislik / 2 + genislik / 16 >= cisim["merkez"][0] >= genislik / 2 - genislik / 16:
+        print("ileri git")
+        gh.ileri()
+    return
 
 
 def gemi_bul_ve_hareket_et(resim):
@@ -11,8 +36,13 @@ def gemi_bul_ve_hareket_et(resim):
     # cismin etrafına dikdörtgen çizme
     cv2.rectangle(gemiResim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
                   (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
-    ts.goruntuye_gore_hareket(gemiResim, enBuyukGemi)
+    if enBuyukGemi['alan'] > enKucukGemiAlani:
+        ts.goruntuye_gore_hareket(gemiResim, enBuyukGemi)
+    else:
+        print("Gemi bulunamadı...")
+        cisim_bulunamazsa()
 
+    # TODO Geminin yakında olduğunu tespit etme
     # TODO Gemi alma eklenecek
 
     return gemiResim
@@ -37,9 +67,10 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
 
 def duvar_bul_ve_carpma(resim):
     duvarResim = resim.copy()
-    duvarMaske = yar.maske_olustur(duvarResim, yar.renk_siniri["duvar"])
+    duvarMaske = yar.maske_olustur(duvarResim, yar.renk_siniri["duvar"], yar.cekirdek)
     duvarAlanlar = yar.cerceve_ciz(duvarResim, duvarMaske)
 
-    # TODO ekranın alt ortasında duvar varsa motorları kapat, geri git, dön, duvarlardan kurtulana kadar fonksiyondan çıkma
+    # TODO Sensör ve kamera yardımı ile duvara olan uzaklık tespit edilecek (Ekranın altında olması yakında olması anlamına geliyor olabiliri düşün)
+    # TODO Duvar yakındaysa duvardan kaçınma fonksiyonunu çalıştır (Motor durdur, geri git, dön, kontrol et)
 
     return duvarResim
