@@ -1,3 +1,4 @@
+# TODO Son gelişmeler gemi_main_picamera'dan alınacak.
 # TODO Kameraya göre resmi çevirme yapılacak.
 aynaEtkisi = False
 

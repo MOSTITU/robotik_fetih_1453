@@ -1,6 +1,5 @@
 import cv2
 import lib_cv_yardimci as yar
-import lib_tespit_sonrasi as ts
 import lib_gemi_hareket as gh
 
 enKucukGemiAlani = 250
@@ -37,7 +36,7 @@ def gemi_bul_ve_hareket_et(resim):
     cv2.rectangle(gemiResim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
                   (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
     if enBuyukGemi['alan'] > enKucukGemiAlani:
-        ts.goruntuye_gore_hareket(gemiResim, enBuyukGemi)
+        goruntuye_gore_hareket(gemiResim, enBuyukGemi)
     else:
         print("Gemi bulunamadı...")
         cisim_bulunamazsa()

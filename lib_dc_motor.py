@@ -1,5 +1,4 @@
 import RPi.GPIO as GPIO
-from time import sleep
 
 
 def pin_ayarla(pinler):

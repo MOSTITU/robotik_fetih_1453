@@ -1,3 +1,4 @@
+# TODO gemi_main_webcam.py için silinmedi
 import lib_gemi_hareket as gh
 
 
