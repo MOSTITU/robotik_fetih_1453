@@ -14,9 +14,6 @@ gh.motorlari_ayarla()
 # Kamera kutuphanesinden bir nesne al ve kamera degiskenine ata
 kamera = PiCamera()
 
-# # Kamera cozunurlugunu GENISLIKxUZUNLUK olarak ayarla
-# kamera.resolution = (GENISLIK, UZUNLUK)
-
 # Kameranin saniyedeki resim sayisini 50 olarak ayarla
 kamera.framerate = 50
 
@@ -24,7 +21,6 @@ kamera.framerate = 50
 # kamera.vflip = True
 
 # Resimleri tutmak icin bellekte yer ac
-# resimBellegi = PiRGBArray(kamera, size = (GENISLIK, UZUNLUK))
 resimBellegi = PiRGBArray(kamera)
 
 # Kameranin hazir olmasi icin biraz bekle
@@ -34,8 +30,7 @@ time.sleep(0.1)
 for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_video_port=True):
     # Resim karesinin piksellerini resim isimli bir degiskene yaz
     anaResim = resimKaresi.array
-    #anaResim = cv2.resize(anaResim, (340, 220))
-    anaResim = cv2.resize(anaResim, (640, 480))
+    anaResim = cv2.resize(anaResim, (340, 220))
 
     # gemiResim = anaResim.copy()
     # gemiMaske = yar.maske_olustur(gemiResim, yar.renk_siniri["yesil"], yar.cekirdek)
