@@ -1,13 +1,16 @@
 import cv2
+import time
+import lib_step_motor as sm
 import lib_cv_yardimci as yar
 import lib_gemi_hareket as gh
-
+import lib_mesafe_sensoru as ms
 enKucukGemiAlani = 250
+SU_MESAFESI = 35
 
 
 def cisim_bulunamazsa():
     # TODO cisim bulunamazsa ne yapılacak?
-    gh.dur()
+    gh.sola_don()
 
 
 def goruntuye_gore_hareket(img, merkez):
@@ -51,6 +54,7 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
     kapiAlanlar = yar.cerceve_ciz(kapiResim, kapiMaske)
     ret, kapiMerkez, kapiYon, s1, s2 = yar.kapiyi_tespit_et(kapiAlanlar)
     if not ret:
+        cisim_bulunamazsa()
         return kapiResim
     # Sütunları dikdörtgen içine alma
     cv2.rectangle(kapiResim, (s1['solUstKose'][0], s1['solUstKose'][1]),
@@ -58,7 +62,6 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
     cv2.rectangle(kapiResim, (s2['solUstKose'][0], s2['solUstKose'][1]),
                   (s2["sagAltKose"][0], s2["sagAltKose"][1]), (255, 0, 0), 3)
 
-    # +++ TODO Görüntüye (kapıya) doğru hareket et için görüntünün gerçek kapı olup olmadığı kontrol edilecek // Sütun boyu - sutun arası mesafe kontrol edildi
     goruntuye_gore_hareket(kapiResim, kapiMerkez)
     # TODO tirman'ın durumuna göre banda tırman
 
@@ -70,6 +73,13 @@ def duvar_bul_ve_carpma(resim):
     duvarMaske = yar.maske_olustur(duvarResim, yar.renk_siniri["duvar"], yar.cekirdek)
     duvarAlanlar = yar.cerceve_ciz(duvarResim, duvarMaske)
 
+    # SU_MESAFESI'nden daha yakın olan yer duvar (sarı) mı?
+    if ms.mesafe_olc(38, 40) < SU_MESAFESI and True:
+        print("Duvar gördüm, kaçıyorum...")
+        gh.geri()
+        time.sleep(1)
+        gh.sola_don()
+        time.sleep(1)
     # TODO Sensör ve kamera yardımı ile duvara olan uzaklık tespit edilecek (Ekranın altında olması yakında olması anlamına geliyor olabiliri düşün)
     # TODO Duvar yakındaysa duvardan kaçınma fonksiyonunu çalıştır (Motor durdur, geri git, dön, kontrol et)
 
