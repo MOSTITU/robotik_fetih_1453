@@ -1,7 +1,7 @@
 import lib_gemi_hareket as gemi
 import time as t
 import lib_mesafe_sensoru as ms
-import RPi.GPIO as GPIO
+
 print("Mission start...")
 
 GPIO.setmode(GPIO.BOARD)

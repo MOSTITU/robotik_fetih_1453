@@ -2,20 +2,14 @@ import RPi.GPIO as GPIO
 import time
 
 
-def pin_ayarla(pinler):
-    triggerPin = pinler[0]
-    echoPin = pinler[1]
-
+def pin_ayarla(triggerPin, echoPin):
     GPIO.setup(triggerPin, GPIO.OUT)
     GPIO.setup(echoPin, GPIO.IN)
 
     GPIO.output(triggerPin, False)
 
 
-def dalga_git_gel(pinler):
-    triggerPin = pinler[0]
-    echoPin = pinler[1]
-
+def dalga_git_gel(triggerPin, echoPin):
     GPIO.output(triggerPin, True)
     time.sleep(0.00001)
     GPIO.output(triggerPin, False)
@@ -34,5 +28,5 @@ def mesafe_hesapla(sure):
     return round(mesafe, 2)
 
 
-def mesafe_olc(pinler):
-    return mesafe_hesapla(dalga_git_gel(pinler))
+def mesafe_olc(triggerPin, echoPin):
+    return mesafe_hesapla(dalga_git_gel(triggerPin, echoPin))
