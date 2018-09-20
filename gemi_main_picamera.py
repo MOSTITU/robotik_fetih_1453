@@ -66,6 +66,10 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
     temizKayit.write(anaResim)
     anaResim = cv2.resize(anaResim, (sbt.CV_COZUNURLUGU[0], sbt.CV_COZUNURLUGU[1]))
 
+    duvarResim = th.duvar_bul_ve_carpma(anaResim)
+    duvarKayit.write(duvarResim)
+    cv2.imshow("Duvarlar", duvarResim)
+
     if gemiTopla:
         gemiResim = th.gemi_bul_ve_hareket_et(anaResim)
         if th.gemi_bulundu():
@@ -79,22 +83,22 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
         cv2.imshow("Gemiler", gemiResim)
 
     if gemiBosalt:
-        kapiResim = th.kapi_bul_ve_hareket_et(anaResim)
-        gemiTopla = True
-        gemiBosalt = False
-        kapiKayit.write(kapiResim)
-        cv2.imshow("Kapı (Gemi bosalt)", kapiResim)
+        if not th.bant_bulundu():
+            kapiResim = th.kapi_bul_ve_hareket_et(anaResim)
+            kapiKayit.write(kapiResim)
+            cv2.imshow("Kapı (Gemi bosalt)", kapiResim)
+        else:
+            th.gemi_bosalt()
+            gemiTopla = True
+            gemiBosalt = False
 
+    # TODO bandaTirman ne zaman True olacak?
     if bandaTirman:
         kapiResim = th.banda_tirman(anaResim)
         kapiKayit.write(kapiResim)
         cv2.imshow("Kapı (Banda tırman)", kapiResim)
 
-    duvarResim = th.duvar_bul_ve_carpma(anaResim)
-
     cv2.imshow("Temiz Görüntü", anaResim)
-    duvarKayit.write(duvarResim)
-    cv2.imshow("Duvarlar", duvarResim)
 
     resimBellegi.truncate(0)
     if cv2.waitKey(20) == 27:
