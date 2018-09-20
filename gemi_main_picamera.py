@@ -8,22 +8,22 @@ import time
 import cv2
 import RPi.GPIO as GPIO
 import lib_sabitler as sbt
-import lib_step_motor as sm
-import lib_gemi_hareket as gh
+import lib_step_motor as step
+import lib_gemi_hareket as gemi
 import lib_mesafe_sensoru as ms
 import lib_tespit_ve_hareket as th
 
 
 GPIO.setmode(GPIO.BOARD)
-gh.motorlari_ayarla()
+gemi.motorlari_ayarla()
 # Çarpraz sensör
 ms.pin_ayarla(sbt.CAPRAZ_SENSOR_PIN)
 # Direk aşağı sensör
 ms.pin_ayarla(sbt.DIKEY_SENSOR_PIN)
-sm.motor_pinlerini_ayarla(sbt.BANT_PIN)
-sm.motor_pinlerini_ayarla(sbt.ON_KOL_PIN)
+step.motor_pinlerini_ayarla(sbt.BANT_PIN)
+step.motor_pinlerini_ayarla(sbt.ON_KOL_PIN)
 # Kapalı olan kollar açılıyor.
-sm.tam_tur_don(sbt.ON_KOL_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.ON_KOL_PIN)
+step.tam_tur_don(sbt.ON_KOL_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.ON_KOL_PIN)
 
 # Kamera kutuphanesinden bir nesne al ve kamera degiskenine ata
 kamera = PiCamera()
