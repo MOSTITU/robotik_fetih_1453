@@ -62,6 +62,8 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
 
     goruntuye_gore_hareket(kapiResim, kapiMerkez)
 
+    # TODO Banda çıkmaması için mesafe sensörü yardımı alınacak.
+
     return kapiResim
 
 
