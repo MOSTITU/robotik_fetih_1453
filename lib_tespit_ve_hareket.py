@@ -1,12 +1,10 @@
 import cv2
 import time
+import lib_sabitler as sbt
 import lib_step_motor as sm
 import lib_cv_yardimci as yar
 import lib_gemi_hareket as gh
 import lib_mesafe_sensoru as ms
-enKucukGemiAlani = 250
-SU_MESAFESI = 35
-
 
 def cisim_bulunamazsa():
     # TODO cisim bulunamazsa ne yapılacak?
@@ -36,7 +34,7 @@ def gemi_bul_ve_hareket_et(resim):
     # cismin etrafına dikdörtgen çizme
     cv2.rectangle(gemiResim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
                   (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
-    if enBuyukGemi['alan'] > enKucukGemiAlani:
+    if enBuyukGemi['alan'] > sbt.EN_KUCUK_GEMI_PIXEL_ALANI:
         goruntuye_gore_hareket(gemiResim, enBuyukGemi['merkez'])
     else:
         print("Gemi bulunamadı...")
@@ -63,7 +61,6 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
                   (s2["sagAltKose"][0], s2["sagAltKose"][1]), (255, 0, 0), 3)
 
     goruntuye_gore_hareket(kapiResim, kapiMerkez)
-    # TODO tirman'ın durumuna göre banda tırman
 
     return kapiResim
 
@@ -73,14 +70,37 @@ def duvar_bul_ve_carpma(resim):
     duvarMaske = yar.maske_olustur(duvarResim, yar.renk_siniri["duvar"], yar.cekirdek)
     duvarAlanlar = yar.cerceve_ciz(duvarResim, duvarMaske)
 
-    # SU_MESAFESI'nden daha yakın olan yer duvar (sarı) mı?
-    if ms.mesafe_olc(38, 40) < SU_MESAFESI and True:
-        print("Duvar gördüm, kaçıyorum...")
-        gh.geri()
-        time.sleep(1)
-        gh.sola_don()
-        time.sleep(1)
+    # # SU_MESAFESI'nden daha yakın olan yer duvar (sarı) mı?
+    # if ms.mesafe_olc(sbt.CAPRAZ_SENSOR_PIN) < SU_MESAFESI and True:
+    #     print("Duvar gördüm, kaçıyorum...")
+    #     gh.geri()
+    #     time.sleep(1)
+    #     gh.sola_don()
+    #     time.sleep(1)
     # TODO Sensör ve kamera yardımı ile duvara olan uzaklık tespit edilecek (Ekranın altında olması yakında olması anlamına geliyor olabiliri düşün)
     # TODO Duvar yakındaysa duvardan kaçınma fonksiyonunu çalıştır (Motor durdur, geri git, dön, kontrol et)
 
     return duvarResim
+
+
+def gemi_bulundu():
+    ort = 0
+    for i in range(5):
+        ort += ms.mesafe_olc(sbt.DIKEY_SENSOR_PIN)
+    ort /= 5
+    if ort < sbt.DIK_SU_MESAFESI:
+        return True
+    return False
+
+
+def gemi_bosalt():
+    sm.tam_tur_don(-sbt.BANT_TAM_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.BANT_PIN)
+
+def gemi_topla():
+    sm.tam_tur_don(-sbt.ON_KOL_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.ON_KOL_PIN)
+    sm.tam_tur_don(sbt.BANT_TAM_TUR_SAYISI/2, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.BANT_PIN)
+
+
+# TODO tirman'ın durumuna göre banda tırman
+def banda_tirman(resim):
+    return kapi_bul_ve_hareket_et(resim)
