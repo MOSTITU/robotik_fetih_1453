@@ -6,8 +6,9 @@ import lib_cv_yardimci as yar
 import lib_gemi_hareket as gh
 import lib_mesafe_sensoru as ms
 
+
 def cisim_bulunamazsa():
-    # TODO cisim bulunamazsa ne yapılacak?
+    # Biraz daha düşün TODO cisim bulunamazsa ne yapılacak?
     gh.sola_don()
 
 
@@ -40,9 +41,6 @@ def gemi_bul_ve_hareket_et(resim):
         print("Gemi bulunamadı...")
         cisim_bulunamazsa()
 
-    # TODO Geminin yakında olduğunu tespit etme
-    # TODO Gemi alma eklenecek
-
     return gemiResim
 
 
@@ -62,9 +60,14 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
 
     goruntuye_gore_hareket(kapiResim, kapiMerkez)
 
-    # TODO Banda çıkmaması için mesafe sensörü yardımı alınacak.
-
     return kapiResim
+
+
+def duvardan_kac():
+    gh.geri()
+    time.sleep(1)
+    gh.sola_don()
+    time.sleep(1)
 
 
 def duvar_bul_ve_carpma(resim):
@@ -72,24 +75,26 @@ def duvar_bul_ve_carpma(resim):
     duvarMaske = yar.maske_olustur(duvarResim, yar.renk_siniri["duvar"], yar.cekirdek)
     duvarAlanlar = yar.cerceve_ciz(duvarResim, duvarMaske)
 
-    # # SU_MESAFESI'nden daha yakın olan yer duvar (sarı) mı?
-    # if ms.mesafe_olc(sbt.CAPRAZ_SENSOR_PIN) < SU_MESAFESI and True:
-    #     print("Duvar gördüm, kaçıyorum...")
-    #     gh.geri()
-    #     time.sleep(1)
-    #     gh.sola_don()
-    #     time.sleep(1)
-    # TODO Sensör ve kamera yardımı ile duvara olan uzaklık tespit edilecek (Ekranın altında olması yakında olması anlamına geliyor olabiliri düşün)
-    # TODO Duvar yakındaysa duvardan kaçınma fonksiyonunu çalıştır (Motor durdur, geri git, dön, kontrol et)
+
+    # TODO Acaba sensörden tespit edilen şey duvar mı?
+    # Eğer duvara fazla yakınsa duvardan kaç
+    if sensor_mesafe_bul(sbt.CAPRAZ_SENSOR_PIN, sbt.SENSOR_OLCUMU_KONTROL_SAYISI) > sbt.CACAPRAZ_SU_MESAFESI:
+        print("Duvar gördüm, kaçıyorum...")
+        duvardan_kac()
 
     return duvarResim
 
 
-def gemi_bulundu():
+def sensor_mesafe_bul(sensorPin, kontrolSayisi):
     ort = 0
-    for i in range(5):
-        ort += ms.mesafe_olc(sbt.DIKEY_SENSOR_PIN)
-    ort /= 5
+    for i in range(kontrolSayisi):
+        ort += ms.mesafe_olc(sensorPin)
+    ort /= kontrolSayisi
+    return ort
+
+
+def gemi_bulundu():
+    ort = sensor_mesafe_bul(sbt.DIKEY_SENSOR_PIN, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
     if ort < sbt.DIK_SU_MESAFESI:
         return True
     return False
@@ -98,11 +103,23 @@ def gemi_bulundu():
 def gemi_bosalt():
     sm.tam_tur_don(-sbt.BANT_TAM_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.BANT_PIN)
 
+
 def gemi_topla():
+    gh.dur()
+    time.sleep(0.1)
     sm.tam_tur_don(-sbt.ON_KOL_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.ON_KOL_PIN)
-    sm.tam_tur_don(sbt.BANT_TAM_TUR_SAYISI/2, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.BANT_PIN)
+    sm.tam_tur_don(sbt.BANT_TAM_TUR_SAYISI / 2, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.BANT_PIN)
 
 
-# TODO tirman'ın durumuna göre banda tırman
 def banda_tirman(resim):
     return kapi_bul_ve_hareket_et(resim)
+
+
+def bant_bulundu():
+    # TODO Banda çıkmaması için mesafe sensörü yardımı alınacak.
+    ort = sensor_mesafe_bul(sbt.CAPRAZ_SENSOR_PIN, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
+    if ort < sbt.DIK_SU_MESAFESI:
+        return True
+    return False
+
+# TODO Değişiklikler -> bant_bulundu(), sensör_mesafe_bul(), duvardan_kac()
