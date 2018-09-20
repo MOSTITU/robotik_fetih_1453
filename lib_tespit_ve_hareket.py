@@ -78,7 +78,7 @@ def duvar_bul_ve_carpma(resim):
 
     # TODO Acaba sensörden tespit edilen şey duvar mı?
     # Eğer duvara fazla yakınsa duvardan kaç
-    if sensor_mesafe_bul(sbt.CAPRAZ_SENSOR_PIN, sbt.SENSOR_OLCUMU_KONTROL_SAYISI) > sbt.CACAPRAZ_SU_MESAFESI:
+    if sensor_mesafe_bul(sbt.CAPRAZ_SENSOR_PIN, sbt.SENSOR_OLCUMU_KONTROL_SAYISI) < sbt.CACAPRAZ_SU_MESAFESI:
         print("Duvar gördüm, kaçıyorum...")
         duvardan_kac()
 
@@ -116,10 +116,7 @@ def banda_tirman(resim):
 
 
 def bant_bulundu():
-    # TODO Banda çıkmaması için mesafe sensörü yardımı alınacak.
     ort = sensor_mesafe_bul(sbt.CAPRAZ_SENSOR_PIN, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
     if ort < sbt.DIK_SU_MESAFESI:
         return True
     return False
-
-# TODO Değişiklikler -> bant_bulundu(), sensör_mesafe_bul(), duvardan_kac()
