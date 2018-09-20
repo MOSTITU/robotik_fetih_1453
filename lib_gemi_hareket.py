@@ -1,42 +1,38 @@
 # TODO Sağ/Sol motor pinleri de fonksiyonlarda alınacak. Değişken silinecek.
 
 import lib_dc_motor as dc
+import lib_sabitler as sbt
 
-solMotorPins = [8, 10, 12]
-sagMotorPins = [11, 13, 15]
 
 
 def motor_pinleri_ayarla(solPins, sagPins):
-    solMotorPins = solPins
-    sagMotorPins = sagPins
     motorlari_ayarla()
 
-
 def motorlari_ayarla():
-    dc.pin_ayarla(solMotorPins)
-    dc.pin_ayarla(sagMotorPins)
+    dc.pin_ayarla(sbt.SOL_DC_MOTOR_PIN)
+    dc.pin_ayarla(sbt.SAG_DC_MOTOR_PIN)
 
 
 def sola_don():
-    dc.ileri(sagMotorPins)
-    dc.geri(solMotorPins)
+    dc.ileri(sbt.SAG_DC_MOTOR_PIN)
+    dc.geri(sbt.SOL_DC_MOTOR_PIN)
 
 
 def saga_don():
-    dc.ileri(solMotorPins)
-    dc.geri(sagMotorPins)
+    dc.ileri(sbt.SOL_DC_MOTOR_PIN)
+    dc.geri(sbt.SAG_DC_MOTOR_PIN)
 
 
 def ileri():
-    dc.ileri(solMotorPins)
-    dc.ileri(sagMotorPins)
+    dc.ileri(sbt.SOL_DC_MOTOR_PIN)
+    dc.ileri(sbt.SAG_DC_MOTOR_PIN)
 
 
 def dur():
-    dc.durdur(solMotorPins)
-    dc.durdur(sagMotorPins)
+    dc.durdur(sbt.SOL_DC_MOTOR_PIN)
+    dc.durdur(sbt.SAG_DC_MOTOR_PIN)
 
 
 def geri():
-    dc.geri(solMotorPins)
-    dc.geri(sagMotorPins)
+    dc.geri(sbt.SOL_DC_MOTOR_PIN)
+    dc.geri(sbt.SAG_DC_MOTOR_PIN)
