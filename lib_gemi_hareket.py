@@ -1,4 +1,4 @@
-# TODO Sağ/Sol motor pinleri de fonksiyonlarda alınacak. Değişken silinecek.
+# Kod estetiği TODO Sağ/Sol motor pinleri de fonksiyonlarda alınacak. Değişken silinecek.
 
 import lib_dc_motor as dc
 import lib_sabitler as sbt
