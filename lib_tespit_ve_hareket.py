@@ -1,7 +1,7 @@
 import cv2
 import time
 import lib_sabitler as sbt
-import lib_step_motor as sm
+import lib_step_motor as step
 import lib_cv_yardimci as yar
 import lib_gemi_hareket as gh
 import lib_mesafe_sensoru as ms
@@ -76,9 +76,9 @@ def duvar_bul_ve_carpma(resim):
     duvarAlanlar = yar.cerceve_ciz(duvarResim, duvarMaske)
 
 
-    # TODO Acaba sensörden tespit edilen şey duvar mı?
     # Eğer duvara fazla yakınsa duvardan kaç
-    if sensor_mesafe_bul(sbt.CAPRAZ_SENSOR_PIN, sbt.SENSOR_OLCUMU_KONTROL_SAYISI) < sbt.CACAPRAZ_SU_MESAFESI:
+    mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_YATAY, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
+    if mesafe < sbt.MESAFE_YATAY_DUVAR:
         print("Duvar gördüm, kaçıyorum...")
         duvardan_kac()
 
@@ -94,21 +94,31 @@ def sensor_mesafe_bul(sensorPin, kontrolSayisi):
 
 
 def gemi_bulundu():
-    ort = sensor_mesafe_bul(sbt.DIKEY_SENSOR_PIN, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
-    if ort < sbt.DIK_SU_MESAFESI:
+    mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_CAPRAZ, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
+    if mesafe < sbt.MESAFE_CAPRAZ_SU:
         return True
     return False
 
 
+# TODO Orta çubuğun ipi salınabilecek gibi olmalı, etrafa dolanmamalı
+# TODO Gemi toplanırken orta çubuğun ipi çekilmese ip bir yerlere dolanır mı? İpin konumu ne?
 def gemi_bosalt():
-    sm.tam_tur_don(-sbt.BANT_TAM_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.BANT_PIN)
+    # Öndeki çubuk yukarı kalkar
+    step.tam_tur_don(-sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
+    # Romork yukarı kalkar
+    step.tam_tur_don(sbt.TUR_SAYISI_ROMORK+1, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_ROMORK)
+    # Romork geri yerine iner
+    step.tam_tur_don(-sbt.TUR_SAYISI_ROMORK, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_ROMORK)
+    # Öndeki çubuk geri yerine iner
+    step.tam_tur_don(sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
 
 
+# TODO Gemi toplanırken orta çubuğun ipi çekilmese ip bir yerlere dolanır mı? İpin konumu ne?
 def gemi_topla():
     gh.dur()
     time.sleep(0.1)
-    sm.tam_tur_don(-sbt.ON_KOL_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.ON_KOL_PIN)
-    sm.tam_tur_don(sbt.BANT_TAM_TUR_SAYISI / 2, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.BANT_PIN)
+    step.tam_tur_don(sbt.TUR_SAYISI_DOLDURMA_CUBUGU + 1, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_DOLDURMA_CUBUGU)
+    step.tam_tur_don(-sbt.TUR_SAYISI_DOLDURMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_DOLDURMA_CUBUGU)
 
 
 def banda_tirman(resim):
@@ -116,7 +126,7 @@ def banda_tirman(resim):
 
 
 def bant_bulundu():
-    ort = sensor_mesafe_bul(sbt.CAPRAZ_SENSOR_PIN, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
-    if ort < sbt.DIK_SU_MESAFESI:
+    mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_YATAY, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
+    if mesafe < sbt.MESAFE_YATAY_DUVAR:
         return True
     return False
