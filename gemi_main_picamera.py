@@ -53,8 +53,9 @@ print("Görevlere hazırlanılıyor...")
 gemiTopla = True
 gemiBosalt = False
 toplananGemiSayisi = 0
-maxGemiKapasitesi = 2
+maxGemiKapasitesi = 5
 bandaTirman = False
+bosaltmaSayisi = 0
 
 # Bir for dongusu icinde kameradan resim yakalamaya basla
 for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_video_port=True):
@@ -93,8 +94,14 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
         else:
             print("Banda gelindi, gemi boşaltılıyor")
             th.gemi_bosalt()
-            gemiTopla = True
-            gemiBosalt = False
+            bosaltmaSayisi += 1
+            if bosaltmaSayisi>= 2:
+                gemiTopla = False
+                gemiBosalt = False
+                bandaTirman = True
+            else:
+                gemiTopla = True
+                gemiBosalt = False
 
     # TODO bandaTirman ne zaman True olacak?
     if bandaTirman:
