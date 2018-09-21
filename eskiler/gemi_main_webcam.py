@@ -34,7 +34,7 @@ while True:
 
     resim = cv2.resize(resim, (340, 220))
 
-    gemiMaske = yar.maske_olustur(resim, yar.renk_siniri["yesil"], yar.cekirdek)
+    gemiMaske = yar.maske_olustur(resim, yar.renk_siniri["kirmizi"], yar.cekirdek)
     gemiAlanlar = yar.cerceve_ciz(resim, gemiMaske)
 
     # print("Tespit edilen cisim sayisi:", len(gemiAlanlar))

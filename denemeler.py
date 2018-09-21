@@ -17,21 +17,21 @@ if secenek == 1:
 
     # İlk iki pin ileri-geri'yi yönetiyor
     # Üçüncü pin motorun çalışıp çalışmadığını
-    motorA = [8, 10, 12]
-
+    motorA = [3,5,7]
+    motorB = [11,13,15]
     dc.pin_ayarla(motorA)
-
-    dc.gucu_degistir(motorA, 45)
+    dc.pin_ayarla(motorB)
+    print("İleri")
     dc.ileri(motorA)
-    sleep(3)
+    dc.ileri(motorB)
+    sleep(10)
+    print("Geri")
+    dc.geri(motorA)
+    dc.geri(motorB)
+    sleep(10)
+    print("Dur")
     dc.durdur(motorA)
-    print("hızlan")
-    dc.gucu_degistir(motorA, 100)
-    dc.ileri(motorA)
-    sleep(3)
-
-    dc.durdur(motorA)
-
+    dc.durdur(motorB)
     GPIO.cleanup()
 
 elif secenek == 2:
@@ -45,14 +45,14 @@ elif secenek == 2:
     GPIO.setwarnings(False)
 
     print("Mesafe sensörü ayarlanıyor...")
-    ms.pin_ayarla(16, 18)
+    ms.pin_ayarla([8,10])
 
     for i in range(0, 15):
 
         print("Olculuyor...")
         time.sleep(1)
 
-        mesafe = ms.mesafe_olc(16, 18)
+        mesafe = ms.mesafe_olc([8,10])
 
         if mesafe < 2:
             print("Mesafe fazla yakın!")
@@ -104,7 +104,7 @@ elif (secenek == 4):
 
     GPIO.setmode(GPIO.BOARD)
 
-    kontrolPinleri = [31, 33, 35, 37]
+    kontrolPinleri = [32,36,38,40]
     step.motor_pinlerini_ayarla(kontrolPinleri)
 
     tur = float(input("Tur sayısını giriniz (negatif->ters yön): "))
