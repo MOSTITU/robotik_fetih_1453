@@ -1,3 +1,5 @@
+# TODO step motorların yönünü kontrole et
+# TODO DC motor yönlerini kontrol et
 # Kullanılan pinler ->
 # Stepler -> [31, 33, 35, 37], [32, 36, 38, 40]
 # Sensörler -> [16,18] , [11,13]
@@ -36,9 +38,11 @@ print("Görevlere hazırlanılıyor...")
 gemiTopla = True
 gemiBosalt = False
 toplananGemiSayisi = 0
-maxGemiKapasitesi = 2
+# TODO Max gemi sayısı
+maxGemiKapasitesi = 5
 bandaTirman = False
 bosaltmaSayisi = 0
+karsidayim = False
 
 # Bir for dongusu icinde kameradan resim yakalamaya basla
 while True:
@@ -87,13 +91,25 @@ while True:
             else:
                 gemiTopla = True
                 gemiBosalt = False
+                # TODO Eğer karşıya geçmediyse duvardan kaç
+                # TODO Eğer karşıya geçtiyse karsidayim=True
+                th.duvardan_kac()
 
-    # TODO bandaTirman ne zaman True olacak?
     if bandaTirman:
         print("Banda tırmanma aşaması...")
         kapiResim = th.banda_tirman(anaResim)
         kapiKayit.write(kapiResim)
         cv2.imshow("Kapı (Banda tırman)", kapiResim)
+        bandaTirman = False
+        karsidayim = True
+
+    if karsidayim:
+        surResim = th.sur_bul_ve_hareket_et(anaResim)
+        if th.sur_bulundu():
+            gemi.dur()
+            th.top_at()
+        surKayit.write(surResim)
+        cv2.imshow("Sur", surResim)
 
     cv2.imshow("Temiz Görüntü", anaResim)
 

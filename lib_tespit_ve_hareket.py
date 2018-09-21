@@ -114,20 +114,17 @@ def gemi_bulundu():
     return False
 
 
-# TODO Orta çubuğun ipi salınabilecek gibi olmalı, etrafa dolanmamalı
-# TODO Gemi toplanırken orta çubuğun ipi çekilmese ip bir yerlere dolanır mı? İpin konumu ne?
 def gemi_bosalt():
     # Öndeki çubuk yukarı kalkar
-    step.tam_tur_don(-sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
+    step.tam_tur_don(sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
     # Romork yukarı kalkar
-    step.tam_tur_don(sbt.TUR_SAYISI_ROMORK+1, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_ROMORK)
+    step.tam_tur_don(sbt.TUR_SAYISI_ROMORK, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_ROMORK)
     # Romork geri yerine iner
     step.tam_tur_don(-sbt.TUR_SAYISI_ROMORK, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_ROMORK)
     # Öndeki çubuk geri yerine iner
-    step.tam_tur_don(sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
+    step.tam_tur_don(-sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
 
 
-# TODO Gemi toplanırken orta çubuğun ipi çekilmese ip bir yerlere dolanır mı? İpin konumu ne?
 def gemi_topla():
     gemi.dur()
     time.sleep(0.1)
@@ -144,3 +141,31 @@ def bant_bulundu():
     if mesafe < sbt.MESAFE_YATAY_DUVAR:
         return True
     return False
+
+
+def sur_bul_ve_hareket_et(resim):
+    surResim = resim.copy()
+    surMaske = cvYar.maske_olustur(surResim, cvYar.renk_siniri["gemi"], cvYar.cekirdek)
+    surAlanlar = cvYar.cerceve_ciz(surResim, surMaske)
+    enBuyukSur = cvYar.en_buyugu_bul(surAlanlar)
+    # cismin etrafına dikdörtgen çizme
+    cv2.rectangle(surResim, (enBuyukSur['solUstKose'][0], enBuyukSur['solUstKose'][1]),
+                  (enBuyukSur["sagAltKose"][0], enBuyukSur["sagAltKose"][1]), (255, 0, 0), 3)
+    if enBuyukSur['alan'] > sbt.EN_KUCUK_SUR_PIXEL_ALANI:
+        goruntuye_gore_hareket(surResim, enBuyukSur['merkez'])
+    else:
+        print("Gemi bulunamadı...")
+        cisim_bulunamazsa()
+
+    return surResim
+
+
+def sur_bulundu():
+    mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_YATAY, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
+    if mesafe < sbt.MESAFE_YATAY_DUVAR:
+        return True
+    return False
+
+# TODO Top atma eklenecek
+def top_at():
+    return
