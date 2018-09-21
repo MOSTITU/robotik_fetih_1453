@@ -89,7 +89,6 @@ def duvar_bul_ve_carpma(resim):
     duvarMaske = cvYar.maske_olustur(duvarResim, cvYar.renk_siniri["duvar"], cvYar.cekirdek)
     duvarAlanlar = cvYar.cerceve_ciz(duvarResim, duvarMaske)
 
-
     # Eğer duvara fazla yakınsa duvardan kaç
     mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_YATAY, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
     if mesafe < sbt.MESAFE_YATAY_DUVAR:
@@ -145,7 +144,7 @@ def bant_bulundu():
 
 def sur_bul_ve_hareket_et(resim):
     surResim = resim.copy()
-    surMaske = cvYar.maske_olustur(surResim, cvYar.renk_siniri["gemi"], cvYar.cekirdek)
+    surMaske = cvYar.maske_olustur(surResim, cvYar.renk_siniri["sur"], cvYar.cekirdek)
     surAlanlar = cvYar.cerceve_ciz(surResim, surMaske)
     enBuyukSur = cvYar.en_buyugu_bul(surAlanlar)
     # cismin etrafına dikdörtgen çizme
@@ -165,6 +164,7 @@ def sur_bulundu():
     if mesafe < sbt.MESAFE_YATAY_DUVAR:
         return True
     return False
+
 
 # TODO Top atma eklenecek
 def top_at():
