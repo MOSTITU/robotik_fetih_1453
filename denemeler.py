@@ -45,14 +45,14 @@ elif secenek == 2:
     GPIO.setwarnings(False)
 
     print("Mesafe sensörü ayarlanıyor...")
-    ms.pin_ayarla(16, 18)
+    ms.pin_ayarla([16, 18])
 
     for i in range(0, 15):
 
         print("Olculuyor...")
         time.sleep(1)
 
-        mesafe = ms.mesafe_olc(16, 18)
+        mesafe = ms.mesafe_olc([16, 18])
 
         if mesafe < 2:
             print("Mesafe fazla yakın!")
