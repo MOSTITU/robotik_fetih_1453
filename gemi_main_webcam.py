@@ -4,15 +4,11 @@
 # Stepler -> [31, 33, 35, 37], [32, 36, 38, 40]
 # Sensörler -> [16,18] , [11,13]
 # Motorlar -> [8, 10, 12], [3, 5, 7]
-from picamera import PiCamera
-from picamera.array import PiRGBArray
 import time
 import cv2
 import RPi.GPIO as GPIO
 import lib_sabitler as sbt
-import lib_step_motor as step
 import lib_gemi_hareket as gemi
-import lib_mesafe_sensoru as ms
 import lib_tespit_ve_hareket as th
 
 print("Başlangıç ayarlamaları yapılıyor...")
@@ -21,7 +17,7 @@ th.butun_cihazlarin_pinlerini_ayarla()
 th.baslangic_ayarlamalari()
 
 print("Görüntü alınıyor...")
-kamera = cv2.VideoCapture(0)
+kamera = cv2.VideoCapture("Medya/Kayitlar/temizKayit4.avi")
 
 print("Video kaydı için hazırlıklar yapılıyor...")
 # Video kaydı için

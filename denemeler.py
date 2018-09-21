@@ -128,7 +128,7 @@ elif secenek == 5:
     import lib_sabitler as sbt
     import lib_cv_yardimci as cvYar
 
-    kamera = cv2.VideoCapture("Medya/Kayitlar/temizKayit5.avi")
+    kamera = cv2.VideoCapture("Medya/Kayitlar/temizKayit4.avi")
     while True:
         _, anaResim = kamera.read()
         anaResim = cv2.resize(anaResim, (sbt.CV_COZUNURLUGU[0], sbt.CV_COZUNURLUGU[1]))
