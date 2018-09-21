@@ -2,6 +2,7 @@
 from time import sleep
 import RPi.GPIO as GPIO
 
+GPIO.setmode(GPIO.BOARD)
 GPIO.setup(3, GPIO.OUT)
 pwm = GPIO.PWM(3, 50)
 pwm.start(0)
