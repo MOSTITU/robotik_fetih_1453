@@ -18,7 +18,7 @@ def butun_cihazlarin_pinlerini_ayarla():
 
 # TODO Başlangıç ayarlamaları yazılacak
 def baslangic_ayarlamalari():
-    return
+    step.tam_tur_don(-sbt.TUR_SAYISI_DOLDURMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_DOLDURMA_CUBUGU)
 
 
 def cisim_bulunamazsa():
