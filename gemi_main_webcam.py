@@ -38,8 +38,6 @@ print("Görevlere hazırlanılıyor...")
 gemiTopla = True
 gemiBosalt = False
 toplananGemiSayisi = 0
-# TODO Max gemi sayısı
-maxGemiKapasitesi = 5
 bandaTirman = False
 bosaltmaSayisi = 0
 karsidayim = False
@@ -66,7 +64,7 @@ while True:
             th.gemi_topla()
             toplananGemiSayisi += 1
             # Geminin taşıma kapasitesi dolduysa gemi toplamayı bırak, gemi boşaltmaya başla.
-            if toplananGemiSayisi >= maxGemiKapasitesi:
+            if toplananGemiSayisi >= sbt.MAX_GEMI_SAYISI:
                 print("Kapasite doldu...")
                 gemiTopla = False
                 gemiBosalt = True
@@ -84,15 +82,15 @@ while True:
             print("Banda gelindi, gemi boşaltılıyor")
             th.gemi_bosalt()
             bosaltmaSayisi += 1
-            if bosaltmaSayisi>= 2:
+            if bosaltmaSayisi>= sbt.BOSALTMA_SAYISI:
                 gemiTopla = False
                 gemiBosalt = False
                 bandaTirman = True
             else:
                 gemiTopla = True
                 gemiBosalt = False
-                # TODO Eğer karşıya geçmediyse duvardan kaç
-                # TODO Eğer karşıya geçtiyse karsidayim=True
+                # Şu an gerek yok TODO Eğer karşıya geçmediyse duvardan kaç
+                # Şu an gerek yok TODO Eğer karşıya geçtiyse karsidayim=True
                 th.duvardan_kac()
 
     if bandaTirman:
