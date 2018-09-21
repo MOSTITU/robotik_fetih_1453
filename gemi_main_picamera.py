@@ -14,12 +14,12 @@ import lib_mesafe_sensoru as ms
 import lib_tespit_ve_hareket as th
 
 
+print("Başlangıç ayarlamaları yapılıyor...")
 GPIO.setmode(GPIO.BOARD)
+th.butun_cihazlarin_pinlerini_ayarla()
+th.baslangic_ayarlamalari()
 
-
-# Kapalı olan kollar açılıyor.
-step.tam_tur_don(sbt.ON_KOL_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.ON_KOL_PIN)
-
+print("Görüntü alınıyor...")
 # Kamera kutuphanesinden bir nesne al ve kamera degiskenine ata
 kamera = PiCamera()
 
@@ -38,6 +38,7 @@ resimBellegi = PiRGBArray(kamera, size=(sbt.KAMERA_COZUNURLUGU[0], sbt.KAMERA_CO
 # Kameranin hazir olmasi icin biraz bekle
 time.sleep(0.1)
 
+print("Video kaydı için hazırlıklar yapılıyor...")
 # Video kaydı için
 kayitTime = time.strftime("%Y-%m-%d-%H-%M")
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
@@ -47,6 +48,7 @@ gemiKayit = cv2.VideoWriter('./Medya/Kayitlar/' + kayitTime + 'gemiKayit.avi', f
 kapiKayit = cv2.VideoWriter('./Medya/Kayitlar/' + kayitTime + 'kapiKayit.avi', fourcc, 10.0, (sbt.CV_COZUNURLUGU[0], sbt.CV_COZUNURLUGU[1]))
 surKayit = cv2.VideoWriter('./Medya/Kayitlar/' + kayitTime + 'surKayit.avi', fourcc, 10.0, (sbt.CV_COZUNURLUGU[0], sbt.CV_COZUNURLUGU[1]))
 
+print("Görevlere hazırlanılıyor...")
 # Gemi toplama/boşaltma işlemi için
 gemiTopla = True
 gemiBosalt = False
@@ -61,34 +63,42 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
     temizKayit.write(anaResim)
     anaResim = cv2.resize(anaResim, (sbt.CV_COZUNURLUGU[0], sbt.CV_COZUNURLUGU[1]))
 
+    print("Duvar tespit etme ve duvardan kaçınma...")
     duvarResim = th.duvar_bul_ve_carpma(anaResim)
     duvarKayit.write(duvarResim)
     cv2.imshow("Duvarlar", duvarResim)
 
     if gemiTopla:
+        print("Gemi toplama aşaması...")
         gemiResim = th.gemi_bul_ve_hareket_et(anaResim)
         if th.gemi_bulundu():
+            print("Gemi tespit edildi...")
             th.gemi_topla()
             toplananGemiSayisi += 1
             # Geminin taşıma kapasitesi dolduysa gemi toplamayı bırak, gemi boşaltmaya başla.
             if toplananGemiSayisi >= maxGemiKapasitesi:
+                print("Kapasite doldu...")
                 gemiTopla = False
                 gemiBosalt = True
         gemiKayit.write(gemiResim)
         cv2.imshow("Gemiler", gemiResim)
 
     if gemiBosalt:
+        print("Gemi boşaltma aşaması...")
         if not th.bant_bulundu():
+            print("Bant tespit ediliyor, banda doğru hareket ediliyor...")
             kapiResim = th.kapi_bul_ve_hareket_et(anaResim)
             kapiKayit.write(kapiResim)
             cv2.imshow("Kapı (Gemi bosalt)", kapiResim)
         else:
+            print("Banda gelindi, gemi boşaltılıyor")
             th.gemi_bosalt()
             gemiTopla = True
             gemiBosalt = False
 
     # TODO bandaTirman ne zaman True olacak?
     if bandaTirman:
+        print("Banda tırmanma aşaması...")
         kapiResim = th.banda_tirman(anaResim)
         kapiKayit.write(kapiResim)
         cv2.imshow("Kapı (Banda tırman)", kapiResim)
@@ -99,6 +109,7 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
     if cv2.waitKey(20) == 27:
         break
 
+print("Görev tamamlandı. Gemi kapatılıyor...")
 # GPIO cikislarini kapat
 GPIO.cleanup()
 
