@@ -2,14 +2,28 @@ import cv2
 import time
 import lib_sabitler as sbt
 import lib_step_motor as step
-import lib_cv_yardimci as yar
-import lib_gemi_hareket as gh
-import lib_mesafe_sensoru as ms
+import lib_cv_yardimci as cvYar
+import lib_gemi_hareket as gemi
+import lib_mesafe_sensoru as sensor
+
+
+def butun_cihazlarin_pinlerini_ayarla():
+    gemi.motorlari_ayarla()
+    step.motor_pinlerini_ayarla(sbt.PIN_STEP_BOSALTMA_CUBUGU)
+    step.motor_pinlerini_ayarla(sbt.PIN_STEP_DOLDURMA_CUBUGU)
+    step.motor_pinlerini_ayarla(sbt.PIN_STEP_ROMORK)
+    sensor.pin_ayarla(sbt.PIN_SENSOR_CAPRAZ)
+    sensor.pin_ayarla(sbt.PIN_SENSOR_YATAY)
+
+
+# TODO Başlangıç ayarlamaları yazılacak
+def baslangic_ayarlamalari():
+    return
 
 
 def cisim_bulunamazsa():
     # Biraz daha düşün TODO cisim bulunamazsa ne yapılacak?
-    gh.sola_don()
+    gemi.sola_don()
 
 
 def goruntuye_gore_hareket(img, merkez):
@@ -17,21 +31,21 @@ def goruntuye_gore_hareket(img, merkez):
 
     if merkez[0] < genislik / 2 - genislik / 16:
         print("Sola dön")
-        gh.sola_don()
+        gemi.sola_don()
     elif merkez[0] > genislik / 2 + genislik / 16:
         print("Sağ dön")
-        gh.saga_don()
+        gemi.saga_don()
     elif genislik / 2 + genislik / 16 >= merkez[0] >= genislik / 2 - genislik / 16:
         print("ileri git")
-        gh.ileri()
+        gemi.ileri()
     return
 
 
 def gemi_bul_ve_hareket_et(resim):
     gemiResim = resim.copy()
-    gemiMaske = yar.maske_olustur(gemiResim, yar.renk_siniri["gemi"], yar.cekirdek)
-    gemiAlanlar = yar.cerceve_ciz(gemiResim, gemiMaske)
-    enBuyukGemi = yar.en_buyugu_bul(gemiAlanlar)
+    gemiMaske = cvYar.maske_olustur(gemiResim, cvYar.renk_siniri["gemi"], cvYar.cekirdek)
+    gemiAlanlar = cvYar.cerceve_ciz(gemiResim, gemiMaske)
+    enBuyukGemi = cvYar.en_buyugu_bul(gemiAlanlar)
     # cismin etrafına dikdörtgen çizme
     cv2.rectangle(gemiResim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
                   (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
@@ -46,9 +60,9 @@ def gemi_bul_ve_hareket_et(resim):
 
 def kapi_bul_ve_hareket_et(resim, tirman=False):
     kapiResim = resim.copy()
-    kapiMaske = yar.maske_olustur(kapiResim, yar.renk_siniri["kapi"], yar.cekirdek)
-    kapiAlanlar = yar.cerceve_ciz(kapiResim, kapiMaske)
-    ret, kapiMerkez, kapiYon, s1, s2 = yar.kapiyi_tespit_et(kapiAlanlar)
+    kapiMaske = cvYar.maske_olustur(kapiResim, cvYar.renk_siniri["kapi"], cvYar.cekirdek)
+    kapiAlanlar = cvYar.cerceve_ciz(kapiResim, kapiMaske)
+    ret, kapiMerkez, kapiYon, s1, s2 = cvYar.kapiyi_tespit_et(kapiAlanlar)
     if not ret:
         cisim_bulunamazsa()
         return kapiResim
@@ -64,16 +78,16 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
 
 
 def duvardan_kac():
-    gh.geri()
+    gemi.geri()
     time.sleep(1)
-    gh.sola_don()
+    gemi.sola_don()
     time.sleep(1)
 
 
 def duvar_bul_ve_carpma(resim):
     duvarResim = resim.copy()
-    duvarMaske = yar.maske_olustur(duvarResim, yar.renk_siniri["duvar"], yar.cekirdek)
-    duvarAlanlar = yar.cerceve_ciz(duvarResim, duvarMaske)
+    duvarMaske = cvYar.maske_olustur(duvarResim, cvYar.renk_siniri["duvar"], cvYar.cekirdek)
+    duvarAlanlar = cvYar.cerceve_ciz(duvarResim, duvarMaske)
 
 
     # Eğer duvara fazla yakınsa duvardan kaç
@@ -88,7 +102,7 @@ def duvar_bul_ve_carpma(resim):
 def sensor_mesafe_bul(sensorPin, kontrolSayisi):
     ort = 0
     for i in range(kontrolSayisi):
-        ort += ms.mesafe_olc(sensorPin)
+        ort += sensor.mesafe_olc(sensorPin)
     ort /= kontrolSayisi
     return ort
 
@@ -115,7 +129,7 @@ def gemi_bosalt():
 
 # TODO Gemi toplanırken orta çubuğun ipi çekilmese ip bir yerlere dolanır mı? İpin konumu ne?
 def gemi_topla():
-    gh.dur()
+    gemi.dur()
     time.sleep(0.1)
     step.tam_tur_don(sbt.TUR_SAYISI_DOLDURMA_CUBUGU + 1, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_DOLDURMA_CUBUGU)
     step.tam_tur_don(-sbt.TUR_SAYISI_DOLDURMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_DOLDURMA_CUBUGU)

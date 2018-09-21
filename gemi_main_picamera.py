@@ -15,13 +15,8 @@ import lib_tespit_ve_hareket as th
 
 
 GPIO.setmode(GPIO.BOARD)
-gemi.motorlari_ayarla()
-# Çarpraz sensör
-ms.pin_ayarla(sbt.CAPRAZ_SENSOR_PIN)
-# Direk aşağı sensör
-ms.pin_ayarla(sbt.DIKEY_SENSOR_PIN)
-step.motor_pinlerini_ayarla(sbt.BANT_PIN)
-step.motor_pinlerini_ayarla(sbt.ON_KOL_PIN)
+
+
 # Kapalı olan kollar açılıyor.
 step.tam_tur_don(sbt.ON_KOL_TUR_SAYISI, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.ON_KOL_PIN)
 
