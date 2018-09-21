@@ -124,6 +124,7 @@ elif secenek == 4:
 elif secenek == 5:
     import time
     import cv2
+    import numpy as np
     import lib_sabitler as sbt
     import lib_cv_yardimci as cvYar
 
@@ -134,7 +135,22 @@ elif secenek == 5:
 
         def sur_bul_ve_hareket_et(resim):
             surResim = resim.copy()
-            surMaske = cvYar.maske_olustur(surResim, cvYar.renk_siniri["sur"], cvYar.cekirdek)
+
+            img_hsv = cv2.cvtColor(surResim, cv2.COLOR_BGR2HSV)
+
+            # lower mask (0-10)
+            lower_red = np.array([0, 50, 50])
+            upper_red = np.array([10, 255, 255])
+            mask0 = cv2.inRange(img_hsv, lower_red, upper_red)
+
+            # upper mask (170-180)
+            lower_red = np.array([170, 50, 50])
+            upper_red = np.array([180, 255, 255])
+            mask1 = cv2.inRange(img_hsv, lower_red, upper_red)
+
+            # join my masks
+            surMaske = mask0 + mask1
+            # surMaske = cvYar.maske_olustur(surResim, cvYar.renk_siniri["sur"], cvYar.cekirdek)
             surAlanlar = cvYar.cerceve_ciz(surResim, surMaske)
             enBuyukSur = cvYar.en_buyugu_bul(surAlanlar)
             # cismin etrafına dikdörtgen çizme
