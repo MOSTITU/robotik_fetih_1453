@@ -16,8 +16,7 @@ PIN_SENSOR_YATAY = [16, 18]
 KAMERA_COZUNURLUGU = [640, 480]
 CV_COZUNURLUGU = [340, 220]
 EN_KUCUK_GEMI_PIXEL_ALANI = 250
-# Geçici değer yazıldı TODO Sur pixel ölçülecek.
-EN_KUCUK_SUR_PIXEL_ALANI = 1500
+EN_KUCUK_SUR_PIXEL_ALANI = 2000
 STEP_MOTOR_BEKLEME_SURESI = 1
 
 # TODO Sabitlerin değerleri ölçülecek
@@ -28,8 +27,8 @@ BANT_TAM_TUR_SAYISI = 6
 SENSOR_OLCUMU_KONTROL_SAYISI = 10
 MESAFE_YATAY_DUVAR = 40
 MESAFE_CAPRAZ_SU = 45
-# TODO Steplerin tur sayıları ölçülecek, römork tamam
-TUR_SAYISI_ROMORK = 4
+# TODO Steplerin tur sayıları ölçülecek, römork tamam, doldurma tamam,
+TUR_SAYISI_ROMORK = 4.5
 TUR_SAYISI_BOSALTMA_CUBUGU = 1.7
 TUR_SAYISI_DOLDURMA_CUBUGU = 5
 

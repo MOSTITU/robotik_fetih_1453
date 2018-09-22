@@ -211,7 +211,9 @@ elif secenek == 8:
     import lib_mesafe_sensoru as ms
 
     GPIO.setmode(GPIO.BOARD)
+
     ms.pin_ayarla(sbt.PIN_SENSOR_CAPRAZ)
+
     for i in range(15):
         mesafe = ms.mesafe_olc([8, 10])
         if mesafe < 2:
