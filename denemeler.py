@@ -128,7 +128,7 @@ elif secenek == 5:
     import lib_sabitler as sbt
     import lib_cv_yardimci as cvYar
 
-    kamera = cv2.VideoCapture("Medya/Kayitlar/temizKayit4.avi")
+    kamera = cv2.VideoCapture(0)
     while True:
         _, anaResim = kamera.read()
         anaResim = cv2.resize(anaResim, (sbt.CV_COZUNURLUGU[0], sbt.CV_COZUNURLUGU[1]))
@@ -194,7 +194,7 @@ elif secenek == 7:
     GPIO.setmode(GPIO.BOARD)
     ms.pin_ayarla(sbt.PIN_SENSOR_YATAY)
     for i in range(15):
-        mesafe = ms.mesafe_olc([8, 10])
+        mesafe = ms.mesafe_olc(sbt.PIN_SENSOR_YATAY)
         if mesafe < 2:
             print("Mesafe fazla yakın!")
         elif mesafe > 400:
@@ -211,7 +211,7 @@ elif secenek == 8:
     import lib_mesafe_sensoru as ms
 
     GPIO.setmode(GPIO.BOARD)
-    ms.pin_ayarla(sbt.PIN_CAPRAZ_YATAY)
+    ms.pin_ayarla(sbt.PIN_SENSOR_CAPRAZ)
     for i in range(15):
         mesafe = ms.mesafe_olc([8, 10])
         if mesafe < 2:
