@@ -140,9 +140,9 @@ elif secenek == 5:
             img_hsv = cv2.cvtColor(surResim, cv2.COLOR_BGR2HSV)
 
             # alt maske (0-10)
-            mask0 = cv2.inRange(img_hsv, cvYar.renk_siniri["sur_dusuk"][0], cvYar.renk_siniri["sur_dusuk"][1])
+            mask0 = cv2.inRange(img_hsv, cvYar.renk_siniri["gemi"][0], cvYar.renk_siniri["gemi"][1])
             # üst maske (170-180)
-            mask1 = cv2.inRange(img_hsv, cvYar.renk_siniri["sur_yuksek"][0], cvYar.renk_siniri["sur_yuksek"][1])
+            mask1 = cv2.inRange(img_hsv, cvYar.renk_siniri["gemi"][0], cvYar.renk_siniri["gemi"][1])
             # maskeleri birleştir
             surMaske = mask0 + mask1
 
@@ -157,7 +157,7 @@ elif secenek == 5:
             else:
                 print('Gemiyi alma')
 
-            print("En büyük sur alanı: ", enBuyukSur['alan'])
+            print("En büyük sur alanı: ", enBuyukSur['alan'], enBuyukSur['merkez'], enBuyukSur['solUstKose'], enBuyukSur['sagAltKose'])
             return surResim
 
 
