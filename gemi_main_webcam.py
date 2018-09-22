@@ -17,7 +17,7 @@ th.butun_cihazlarin_pinlerini_ayarla()
 th.baslangic_ayarlamalari()
 
 print("Görüntü alınıyor...")
-kamera = cv2.VideoCapture("Medya/Kayitlar/temizKayit4.avi")
+kamera = cv2.VideoCapture(0)
 
 print("Video kaydı için hazırlıklar yapılıyor...")
 # Video kaydı için
@@ -34,6 +34,9 @@ print("Görevlere hazırlanılıyor...")
 gemiTopla = True
 gemiBosalt = False
 toplananGemiSayisi = 0
+
+
+
 bandaTirman = False
 bosaltmaSayisi = 0
 karsidayim = False
