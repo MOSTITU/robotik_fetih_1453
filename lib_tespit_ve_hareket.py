@@ -1,5 +1,6 @@
 import cv2
 import time
+import numpy as np
 import lib_sabitler as sbt
 import lib_step_motor as step
 import lib_cv_yardimci as cvYar
@@ -89,7 +90,6 @@ def duvar_bul_ve_carpma(resim):
     duvarMaske = cvYar.maske_olustur(duvarResim, cvYar.renk_siniri["duvar"], cvYar.cekirdek)
     duvarAlanlar = cvYar.cerceve_ciz(duvarResim, duvarMaske)
 
-
     # Eğer duvara fazla yakınsa duvardan kaç
     mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_YATAY, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
     if mesafe < sbt.MESAFE_YATAY_DUVAR:
@@ -145,7 +145,16 @@ def bant_bulundu():
 
 def sur_bul_ve_hareket_et(resim):
     surResim = resim.copy()
-    surMaske = cvYar.maske_olustur(surResim, cvYar.renk_siniri["gemi"], cvYar.cekirdek)
+    img_hsv = cv2.cvtColor(surResim, cv2.COLOR_BGR2HSV)
+
+    # alt maske (0-10)
+    mask0 = cv2.inRange(img_hsv, cvYar.renk_siniri["sur_dusuk"][0], cvYar.renk_siniri["sur_dusuk"][1])
+    # üst maske (170-180)
+    mask1 = cv2.inRange(img_hsv, cvYar.renk_siniri["sur_yuksek"][0], cvYar.renk_siniri["sur_yuksek"][1])
+    # maskeleri birleştir
+    surMaske = mask0 + mask1
+    # surMaske = cvYar.maske_olustur(surResim, cvYar.renk_siniri["sur"], cvYar.cekirdek)
+
     surAlanlar = cvYar.cerceve_ciz(surResim, surMaske)
     enBuyukSur = cvYar.en_buyugu_bul(surAlanlar)
     # cismin etrafına dikdörtgen çizme
@@ -154,7 +163,7 @@ def sur_bul_ve_hareket_et(resim):
     if enBuyukSur['alan'] > sbt.EN_KUCUK_SUR_PIXEL_ALANI:
         goruntuye_gore_hareket(surResim, enBuyukSur['merkez'])
     else:
-        print("Gemi bulunamadı...")
+        print("Sur bulunamadı...")
         cisim_bulunamazsa()
 
     return surResim
@@ -165,6 +174,7 @@ def sur_bulundu():
     if mesafe < sbt.MESAFE_YATAY_DUVAR:
         return True
     return False
+
 
 # TODO Top atma eklenecek
 def top_at():

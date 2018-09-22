@@ -1,3 +1,7 @@
+# Römork -> +1 -> Aşağıya
+# Boşaltma +1-> yıkarıya
+# doldurma +1 -> yukarı
+
 # KOVA İÇİN PINLER (HPIO.BOARD)
 SAG_DC_MOTOR_PIN = [3, 5, 7]
 SOL_DC_MOTOR_PIN = [11, 13, 15]
@@ -24,9 +28,9 @@ BANT_TAM_TUR_SAYISI = 6
 SENSOR_OLCUMU_KONTROL_SAYISI = 10
 MESAFE_YATAY_DUVAR = 40
 MESAFE_CAPRAZ_SU = 45
-# TODO Steplerin tur sayıları ölçülecek
-TUR_SAYISI_ROMORK = 5
-TUR_SAYISI_BOSALTMA_CUBUGU = 5
+# TODO Steplerin tur sayıları ölçülecek, römork tamam
+TUR_SAYISI_ROMORK = 4
+TUR_SAYISI_BOSALTMA_CUBUGU = 1.7
 TUR_SAYISI_DOLDURMA_CUBUGU = 5
 
 # # BORU İÇİN PINLER (GPIO.BOARD)

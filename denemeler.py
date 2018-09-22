@@ -3,6 +3,14 @@ print("1 - DC Motor")
 print("2 - Mesafe Sensörü")
 print("3 - Gemi Hareket")
 print("4 - Step Motor")
+print("5 - Görüntü işleme")
+print("---------------GEMİ CİHAZLARI DENEME----------------")
+print("6 - Gemi Motorları çalıştır")
+print("7 - Yatay Sensör")
+print("8 - Çapraz Sensör")
+print("9 - Römork Step Motor")
+print("10 - Doldurma Çubuğu Step Motor")
+print("11 - Boşaltma Çubuğu Step Motor")
 
 secenek = int(input("Kullanmak istediginiz modülün numarasını giriniz:"))
 
@@ -17,8 +25,8 @@ if secenek == 1:
 
     # İlk iki pin ileri-geri'yi yönetiyor
     # Üçüncü pin motorun çalışıp çalışmadığını
-    motorA = [3,5,7]
-    motorB = [11,13,15]
+    motorA = [3, 5, 7]
+    motorB = [11, 13, 15]
     dc.pin_ayarla(motorA)
     dc.pin_ayarla(motorB)
     print("İleri")
@@ -45,14 +53,14 @@ elif secenek == 2:
     GPIO.setwarnings(False)
 
     print("Mesafe sensörü ayarlanıyor...")
-    ms.pin_ayarla([8,10])
+    ms.pin_ayarla([8, 10])
 
     for i in range(0, 15):
 
         print("Olculuyor...")
         time.sleep(1)
 
-        mesafe = ms.mesafe_olc([8,10])
+        mesafe = ms.mesafe_olc([8, 10])
 
         if mesafe < 2:
             print("Mesafe fazla yakın!")
@@ -96,7 +104,7 @@ elif secenek == 3:
 
     GPIO.cleanup()
 
-elif (secenek == 4):
+elif secenek == 4:
     print("Step Motor seçildi. Step Motor örnek çalışma başlıyor...")
 
     import RPi.GPIO as GPIO
@@ -104,12 +112,155 @@ elif (secenek == 4):
 
     GPIO.setmode(GPIO.BOARD)
 
-    kontrolPinleri = [32,36,38,40]
+    kontrolPinleri = [32, 36, 38, 40]
     step.motor_pinlerini_ayarla(kontrolPinleri)
 
     tur = float(input("Tur sayısını giriniz (negatif->ters yön): "))
     bekleme = int(input("Bekleme süresini giriniz (ms): "))
     step.tam_tur_don(tur, bekleme, kontrolPinleri)
+
+    GPIO.cleanup()
+
+elif secenek == 5:
+    import time
+    import cv2
+    import numpy as np
+    import lib_sabitler as sbt
+    import lib_cv_yardimci as cvYar
+
+    kamera = cv2.VideoCapture("Medya/Kayitlar/temizKayit4.avi")
+    while True:
+        _, anaResim = kamera.read()
+        anaResim = cv2.resize(anaResim, (sbt.CV_COZUNURLUGU[0], sbt.CV_COZUNURLUGU[1]))
+
+        def sur_bul_ve_hareket_et(resim):
+            surResim = resim.copy()
+
+            img_hsv = cv2.cvtColor(surResim, cv2.COLOR_BGR2HSV)
+
+            # alt maske (0-10)
+            mask0 = cv2.inRange(img_hsv, cvYar.renk_siniri["sur_dusuk"][0], cvYar.renk_siniri["sur_dusuk"][1])
+            # üst maske (170-180)
+            mask1 = cv2.inRange(img_hsv, cvYar.renk_siniri["sur_yuksek"][0], cvYar.renk_siniri["sur_yuksek"][1])
+            # maskeleri birleştir
+            surMaske = mask0 + mask1
+
+            # surMaske = cvYar.maske_olustur(surResim, cvYar.renk_siniri["sur"], cvYar.cekirdek)
+            surAlanlar = cvYar.cerceve_ciz(surResim, surMaske)
+            enBuyukSur = cvYar.en_buyugu_bul(surAlanlar)
+            # cismin etrafına dikdörtgen çizme
+            cv2.rectangle(surResim, (enBuyukSur['solUstKose'][0], enBuyukSur['solUstKose'][1]),
+                          (enBuyukSur["sagAltKose"][0], enBuyukSur["sagAltKose"][1]), (255, 0, 0), 3)
+            print("En büyük sur alanı: ", enBuyukSur['alan'])
+            return surResim
+
+
+        surResim = sur_bul_ve_hareket_et(anaResim)
+        cv2.imshow("Sur", surResim)
+        if cv2.waitKey(80) == 27:
+            break
+    kamera.release()
+    cv2.destroyAllWindows()
+
+elif secenek == 6:
+    print("Gemi motorlarını çalıştırma testi seçildi...")
+    from time import sleep
+    import RPi.GPIO as GPIO
+    import lib_sabitler as sbt
+    import lib_gemi_hareket as gemi
+
+    GPIO.setmode(GPIO.BOARD)
+
+    gemi.motorlari_ayarla()
+
+    sure = int(input("Kaç sn ileri gitsin: "))
+    gemi.ileri()
+    sleep(sure)
+
+    sure = int(input("Kaç sn geri gitsin: "))
+    gemi.geri()
+    sleep(sure)
+
+    gemi.dur()
+    print("Gemi motorlari çalıştırma testi bitti...")
+
+elif secenek == 7:
+    print("Yatay sensör seçildi, 15sn mesafeyi gösterecek...")
+    from time import sleep
+    import RPi.GPIO as GPIO
+    import lib_sabitler as sbt
+    import lib_mesafe_sensoru as ms
+
+    GPIO.setmode(GPIO.BOARD)
+    ms.pin_ayarla(sbt.PIN_SENSOR_YATAY)
+    for i in range(15):
+        mesafe = ms.mesafe_olc([8, 10])
+        if mesafe < 2:
+            print("Mesafe fazla yakın!")
+        elif mesafe > 400:
+            print("Mesafe fazla uzak!")
+        else:
+            print("Mesafe:", mesafe - 0.5, "cm")
+        sleep(1)
+
+elif secenek == 8:
+    print("Çapraz sensör seçildi, 15sn mesafeyi gösterecek...")
+    from time import sleep
+    import RPi.GPIO as GPIO
+    import lib_sabitler as sbt
+    import lib_mesafe_sensoru as ms
+
+    GPIO.setmode(GPIO.BOARD)
+    ms.pin_ayarla(sbt.PIN_CAPRAZ_YATAY)
+    for i in range(15):
+        mesafe = ms.mesafe_olc([8, 10])
+        if mesafe < 2:
+            print("Mesafe fazla yakın!")
+        elif mesafe > 400:
+            print("Mesafe fazla uzak!")
+        else:
+            print("Mesafe:", mesafe - 0.5, "cm")
+        sleep(1)
+
+elif secenek == 9:
+    print("Römork Step Motoru seçildi...")
+    import RPi.GPIO as GPIO
+    import lib_sabitler as sbt
+    import lib_step_motor as step
+
+    GPIO.setmode(GPIO.BOARD)
+
+    step.motor_pinlerini_ayarla(sbt.PIN_STEP_ROMORK)
+    tur = float(input("Tur sayısını giriniz (negatif->ters yön): "))
+    step.tam_tur_don(tur, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_ROMORK)
+
+    GPIO.cleanup()
+
+elif secenek == 10:
+    print("Doldurma Çubuğu Step Motoru seçildi...")
+    import RPi.GPIO as GPIO
+    import lib_sabitler as sbt
+    import lib_step_motor as step
+
+    GPIO.setmode(GPIO.BOARD)
+
+    step.motor_pinlerini_ayarla(sbt.PIN_STEP_DOLDURMA_CUBUGU)
+    tur = float(input("Tur sayısını giriniz (negatif->ters yön): "))
+    step.tam_tur_don(tur, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_DOLDURMA_CUBUGU)
+
+    GPIO.cleanup()
+
+elif secenek == 11:
+    print("Boşaltma Çubuğu Step Motoru seçildi...")
+    import RPi.GPIO as GPIO
+    import lib_sabitler as sbt
+    import lib_step_motor as step
+
+    GPIO.setmode(GPIO.BOARD)
+
+    step.motor_pinlerini_ayarla(sbt.PIN_STEP_BOSALTMA_CUBUGU)
+    tur = float(input("Tur sayısını giriniz (negatif->ters yön): "))
+    step.tam_tur_don(tur, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
 
     GPIO.cleanup()
 

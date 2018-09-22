@@ -5,6 +5,7 @@ def pin_ayarla(pinler):
     for pin in pinler:
         GPIO.setup(pin, GPIO.OUT)
 
+
 # pinler -> 3 elemanlı liste
 def ileri(pinler):
     GPIO.output(pinler[0], GPIO.HIGH)
@@ -21,4 +22,3 @@ def geri(pinler):
 
 def durdur(pinler):
     GPIO.output(pinler[2], GPIO.LOW)
-

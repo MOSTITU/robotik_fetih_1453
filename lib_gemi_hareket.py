@@ -1,6 +1,7 @@
 import lib_dc_motor as dc
 import lib_sabitler as sbt
 
+
 def motorlari_ayarla():
     dc.pin_ayarla(sbt.SOL_DC_MOTOR_PIN)
     dc.pin_ayarla(sbt.SAG_DC_MOTOR_PIN)
