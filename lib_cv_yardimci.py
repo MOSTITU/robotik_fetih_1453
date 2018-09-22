@@ -12,7 +12,7 @@ renk_siniri = {
     "gemi": [np.array([33, 88, 40]), np.array([102, 255, 255])],
     "duvar": [np.array([5, 100, 100]), np.array([40, 255, 256])],
     "kapi": [np.array([100, 60, 60]), np.array([140, 255, 255])],
-    "sur": [np.array([160, 30, 30]), np.array([180, 255, 255])],
+    # "sur": [np.array([160, 30, 30]), np.array([180, 255, 255])],
     "dusuk_kirmizi": [np.array([0, 50, 50]), np.array([10, 255, 255])],
     "yuksek_kirmizi": [np.array([170, 50, 50]), np.array([180, 255, 255])],
     "sur_dusuk": [np.array([0, 50, 50]), np.array([10, 255, 255])],
