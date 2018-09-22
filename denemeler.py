@@ -152,12 +152,12 @@ elif secenek == 5:
             # cismin etrafına dikdörtgen çizme
             cv2.rectangle(surResim, (enBuyukSur['solUstKose'][0], enBuyukSur['solUstKose'][1]),
                           (enBuyukSur["sagAltKose"][0], enBuyukSur["sagAltKose"][1]), (255, 0, 0), 3)
-            if sbt.GEMI_ALMA_KONUM_PIXEL[0][0] < enBuyukSur['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[0][1] and sbt.GEMI_ALMA_KONUM_PIXEL[1][0] < enBuyukSur['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[1][0]:
+            if sbt.GEMI_ALMA_KONUM_PIXEL[0][0] < enBuyukSur['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[0][1] and sbt.GEMI_ALMA_KONUM_PIXEL[1][0] < enBuyukSur['merkez'][1] < sbt.GEMI_ALMA_KONUM_PIXEL[1][1]:
                 print("Gemiyi al")
             else:
                 print('Gemiyi alma')
 
-            print("En büyük sur alanı: ", enBuyukSur['alan'], enBuyukSur['merkez'], enBuyukSur['solUstKose'], enBuyukSur['sagAltKose'])
+            print("En büyük sur alanı: ", enBuyukSur['alan'], enBuyukSur['merkez'], enBuyukSur['solUstKose'], enBuyukSur['sagAltKose'],sbt.GEMI_ALMA_KONUM_PIXEL)
             return surResim
 
 

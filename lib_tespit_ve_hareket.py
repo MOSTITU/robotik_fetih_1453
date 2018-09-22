@@ -4,6 +4,7 @@ import numpy as np
 import lib_sabitler as sbt
 import lib_step_motor as step
 import lib_cv_yardimci as cvYar
+import lib_dc_motor as dc
 import lib_gemi_hareket as gemi
 import lib_mesafe_sensoru as sensor
 
@@ -70,7 +71,7 @@ def gemi_bulundu(resim):
     # cismin etrafına dikdörtgen çizme
     cv2.rectangle(gemiResim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
                   (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
-    if sbt.GEMI_ALMA_KONUM_PIXEL[0][0] < enBuyukGemi['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[0][1] and sbt.GEMI_ALMA_KONUM_PIXEL[1][0] < enBuyukGemi['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[1][0]:
+    if sbt.GEMI_ALMA_KONUM_PIXEL[0][0] < enBuyukGemi['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[0][1] and sbt.GEMI_ALMA_KONUM_PIXEL[1][0] < enBuyukGemi['merkez'][1] < sbt.GEMI_ALMA_KONUM_PIXEL[1][1]:
         return True
     return False
 
@@ -125,13 +126,13 @@ def sensor_mesafe_bul(sensorPin, kontrolSayisi):
 
 def gemi_bosalt():
     # Öndeki çubuk yukarı kalkar
-    step.tam_tur_don(sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
+    step.tam_tur_don(-sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
     # Romork yukarı kalkar
     step.tam_tur_don(sbt.TUR_SAYISI_ROMORK, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_ROMORK)
     # Romork geri yerine iner
     step.tam_tur_don(-sbt.TUR_SAYISI_ROMORK, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_ROMORK)
     # Öndeki çubuk geri yerine iner
-    step.tam_tur_don(-sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
+    step.tam_tur_don(sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
 
 
 def gemi_topla():
@@ -187,4 +188,8 @@ def sur_bulundu():
 
 # TODO Top atma eklenecek
 def top_at():
+    dc.pin_ayarla(19, 21, 23)
+    dc.ileri()
+    time.sleep(10)
+    dc.durdur()
     return
