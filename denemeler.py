@@ -138,25 +138,20 @@ elif secenek == 5:
 
             img_hsv = cv2.cvtColor(surResim, cv2.COLOR_BGR2HSV)
 
-            # lower mask (0-10)
-            lower_red = np.array([0, 50, 50])
-            upper_red = np.array([10, 255, 255])
-            mask0 = cv2.inRange(img_hsv, lower_red, upper_red)
-
-            # upper mask (170-180)
-            lower_red = np.array([170, 50, 50])
-            upper_red = np.array([180, 255, 255])
-            mask1 = cv2.inRange(img_hsv, lower_red, upper_red)
-
-            # join my masks
+            # alt maske (0-10)
+            mask0 = cv2.inRange(img_hsv, cvYar.renk_siniri["sur_dusuk"][0], cvYar.renk_siniri["sur_dusuk"][1])
+            # üst maske (170-180)
+            mask1 = cv2.inRange(img_hsv, cvYar.renk_siniri["sur_yuksek"][0], cvYar.renk_siniri["sur_yuksek"][1])
+            # maskeleri birleştir
             surMaske = mask0 + mask1
+
             # surMaske = cvYar.maske_olustur(surResim, cvYar.renk_siniri["sur"], cvYar.cekirdek)
             surAlanlar = cvYar.cerceve_ciz(surResim, surMaske)
             enBuyukSur = cvYar.en_buyugu_bul(surAlanlar)
             # cismin etrafına dikdörtgen çizme
             cv2.rectangle(surResim, (enBuyukSur['solUstKose'][0], enBuyukSur['solUstKose'][1]),
                           (enBuyukSur["sagAltKose"][0], enBuyukSur["sagAltKose"][1]), (255, 0, 0), 3)
-
+            print("En büyük sur alanı: ", enBuyukSur['alan'])
             return surResim
 
 
