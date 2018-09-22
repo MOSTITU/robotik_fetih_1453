@@ -7,7 +7,7 @@ print("5 - Görüntü işleme")
 print("---------------GEMİ CİHAZLARI DENEME----------------")
 print("6 - Gemi Motorları çalıştır")
 print("7 - Yatay Sensör")
-print("8 - Çapraz Sensör")
+# print("8 - Çapraz Sensör")
 print("9 - Römork Step Motor")
 print("10 - Doldurma Çubuğu Step Motor")
 print("11 - Boşaltma Çubuğu Step Motor")
@@ -132,6 +132,7 @@ elif secenek == 5:
     while True:
         _, anaResim = kamera.read()
         anaResim = cv2.resize(anaResim, (sbt.CV_COZUNURLUGU[0], sbt.CV_COZUNURLUGU[1]))
+        anaResim = cv2.flip(anaResim, 1)
 
         def sur_bul_ve_hareket_et(resim):
             surResim = resim.copy()
@@ -151,6 +152,11 @@ elif secenek == 5:
             # cismin etrafına dikdörtgen çizme
             cv2.rectangle(surResim, (enBuyukSur['solUstKose'][0], enBuyukSur['solUstKose'][1]),
                           (enBuyukSur["sagAltKose"][0], enBuyukSur["sagAltKose"][1]), (255, 0, 0), 3)
+            if sbt.GEMI_ALMA_KONUM_PIXEL[0][0] < enBuyukSur['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[0][1] and sbt.GEMI_ALMA_KONUM_PIXEL[1][0] < enBuyukSur['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[1][0]:
+                print("Gemiyi al")
+            else:
+                print('Gemiyi alma')
+
             print("En büyük sur alanı: ", enBuyukSur['alan'])
             return surResim
 
@@ -203,26 +209,26 @@ elif secenek == 7:
             print("Mesafe:", mesafe - 0.5, "cm")
         sleep(1)
 
-elif secenek == 8:
-    print("Çapraz sensör seçildi, 15sn mesafeyi gösterecek...")
-    from time import sleep
-    import RPi.GPIO as GPIO
-    import lib_sabitler as sbt
-    import lib_mesafe_sensoru as ms
-
-    GPIO.setmode(GPIO.BOARD)
-
-    ms.pin_ayarla(sbt.PIN_SENSOR_CAPRAZ)
-
-    for i in range(15):
-        mesafe = ms.mesafe_olc([8, 10])
-        if mesafe < 2:
-            print("Mesafe fazla yakın!")
-        elif mesafe > 400:
-            print("Mesafe fazla uzak!")
-        else:
-            print("Mesafe:", mesafe - 0.5, "cm")
-        sleep(1)
+# elif secenek == 8:
+#     print("Çapraz sensör seçildi, 15sn mesafeyi gösterecek...")
+#     from time import sleep
+#     import RPi.GPIO as GPIO
+#     import lib_sabitler as sbt
+#     import lib_mesafe_sensoru as ms
+#
+#     GPIO.setmode(GPIO.BOARD)
+#
+#     ms.pin_ayarla(sbt.PIN_SENSOR_CAPRAZ)
+#
+#     for i in range(15):
+#         mesafe = ms.mesafe_olc([8, 10])
+#         if mesafe < 2:
+#             print("Mesafe fazla yakın!")
+#         elif mesafe > 400:
+#             print("Mesafe fazla uzak!")
+#         else:
+#             print("Mesafe:", mesafe - 0.5, "cm")
+#         sleep(1)
 
 elif secenek == 9:
     print("Römork Step Motoru seçildi...")

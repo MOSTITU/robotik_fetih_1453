@@ -41,11 +41,11 @@ karsidayim = False
 # Bir for dongusu icinde kameradan resim yakalamaya basla
 while True:
     _, anaResim = kamera.read()
-
     temizKayit.write(anaResim)
+
     anaResim = cv2.resize(anaResim, (sbt.CV_COZUNURLUGU[0], sbt.CV_COZUNURLUGU[1]))
-    # # Ayna etkisi
-    # anaResim = cv2.flip(anaResim, 1)
+    # Ayna etkisi
+    anaResim = cv2.flip(anaResim, 1)
 
     print("Duvar tespit etme ve duvardan kaçınma...")
     duvarResim = th.duvar_bul_ve_carpma(anaResim)
@@ -55,7 +55,7 @@ while True:
     if gemiTopla:
         print("Gemi toplama aşaması...")
         gemiResim = th.gemi_bul_ve_hareket_et(anaResim)
-        if th.gemi_bulundu():
+        if th.gemi_bulundu(anaResim):
             print("Gemi tespit edildi...")
             th.gemi_topla()
             toplananGemiSayisi += 1

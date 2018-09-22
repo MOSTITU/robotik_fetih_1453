@@ -59,6 +59,22 @@ def gemi_bul_ve_hareket_et(resim):
     return gemiResim
 
 
+def gemi_bulundu(resim):
+    # mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_CAPRAZ, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
+    # if mesafe < sbt.MESAFE_CAPRAZ_SU:
+    #     return True
+    gemiResim = resim.copy()
+    gemiMaske = cvYar.maske_olustur(gemiResim, cvYar.renk_siniri["gemi"], cvYar.cekirdek)
+    gemiAlanlar = cvYar.cerceve_ciz(gemiResim, gemiMaske)
+    enBuyukGemi = cvYar.en_buyugu_bul(gemiAlanlar)
+    # cismin etrafına dikdörtgen çizme
+    cv2.rectangle(gemiResim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
+                  (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
+    if sbt.GEMI_ALMA_KONUM_PIXEL[0][0] < enBuyukGemi['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[0][1] and sbt.GEMI_ALMA_KONUM_PIXEL[1][0] < enBuyukGemi['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[1][0]:
+        return True
+    return False
+
+
 def kapi_bul_ve_hareket_et(resim, tirman=False):
     kapiResim = resim.copy()
     kapiMaske = cvYar.maske_olustur(kapiResim, cvYar.renk_siniri["kapi"], cvYar.cekirdek)
@@ -105,13 +121,6 @@ def sensor_mesafe_bul(sensorPin, kontrolSayisi):
         ort += sensor.mesafe_olc(sensorPin)
     ort /= kontrolSayisi
     return ort
-
-
-def gemi_bulundu():
-    mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_CAPRAZ, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
-    if mesafe < sbt.MESAFE_CAPRAZ_SU:
-        return True
-    return False
 
 
 def gemi_bosalt():
