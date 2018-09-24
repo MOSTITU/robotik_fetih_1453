@@ -7,20 +7,18 @@ renk_siniri = {
     "mavi": [np.array([100, 60, 60]), np.array([140, 255, 255])],
     "beyaz": [np.array([0, 0, 140]), np.array([256, 60, 256])],
     "sari": [np.array([5, 100, 100]), np.array([40, 255, 256])],
-    "kirmizi": [np.array([160, 30, 30]), np.array([180, 255, 255])],
+    "dusuk_kirmizi": [np.array([0, 50, 50]), np.array([10, 255, 255])],
+    "yuksek_kirmizi": [np.array([170, 50, 50]), np.array([180, 255, 255])],
     "mavi2": [np.array((80, 100, 70)), np.array((120, 180, 255))],
     "gemi": [np.array([33, 88, 40]), np.array([102, 255, 255])],
     "duvar": [np.array([5, 100, 100]), np.array([40, 255, 256])],
     "kapi": [np.array([100, 60, 60]), np.array([140, 255, 255])],
-    # "sur": [np.array([160, 30, 30]), np.array([180, 255, 255])],
-    "dusuk_kirmizi": [np.array([0, 50, 50]), np.array([10, 255, 255])],
-    "yuksek_kirmizi": [np.array([170, 50, 50]), np.array([180, 255, 255])],
     "sur_dusuk": [np.array([0, 50, 50]), np.array([10, 255, 255])],
     "sur_yuksek": [np.array([170, 50, 50]), np.array([180, 255, 255])]
 }
 
-# 33. Ders - Erosion, Dilation, Opening, Closing
-# Gürültüyü azaltma/arttırma
+# Erosion, Dilation, Opening, Closing
+# Gürültüyü (Karıncalanmayı) azaltma/arttırma
 cekirdek = {
     "acik": np.ones((5, 5)),
     "kapali": np.ones((20, 20))
@@ -41,6 +39,7 @@ def maske_olustur(resim, sinirlar, incekirdek):
     maskeAcik = cv2.morphologyEx(maske, cv2.MORPH_OPEN, incekirdek["acik"])
     maskeKapali = cv2.morphologyEx(maskeAcik, cv2.MORPH_CLOSE, incekirdek["kapali"])
 
+    # # Maskeleri ekranda göster
     # cv2.imshow("maskeKapali", maskeKapali)
     # cv2.imshow("maskeAcik", maskeAcik)
     # cv2.imshow("maske", maske)
@@ -48,6 +47,7 @@ def maske_olustur(resim, sinirlar, incekirdek):
     return maskeKapali
 
 
+# Maskedeki cisimlerin kenarına çerçeve çiz, alanları (contour) döndür
 def cerceve_ciz(resim, maske):
     # Bulunan alanın çerçevesini alma
     _, cerceveler, h = cv2.findContours(maske.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -58,6 +58,7 @@ def cerceve_ciz(resim, maske):
     return cerceveler
 
 
+# Cisimlerin arasında en büyük olanı tespit et
 def en_buyugu_bul(alanlar):
     enBuyuk = {
         "alan": 0,

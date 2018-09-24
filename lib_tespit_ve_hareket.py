@@ -9,6 +9,7 @@ import lib_gemi_hareket as gemi
 import lib_mesafe_sensoru as sensor
 
 
+# Raspberry Pi'ye bağlı bütün cihazların pinlerini ayarlar
 def butun_cihazlarin_pinlerini_ayarla():
     gemi.motorlari_ayarla()
     step.motor_pinlerini_ayarla(sbt.PIN_STEP_BOSALTMA_CUBUGU)
@@ -18,16 +19,17 @@ def butun_cihazlarin_pinlerini_ayarla():
     sensor.pin_ayarla(sbt.PIN_SENSOR_YATAY)
 
 
-# TODO Başlangıç ayarlamaları yazılacak
+# Gemi ilk çalıştığında başlangıç ayarlarını yapar
 def baslangic_ayarlamalari():
     step.tam_tur_don(-sbt.TUR_SAYISI_DOLDURMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_DOLDURMA_CUBUGU)
 
 
+# Eğer görüntüde cisim yoksa nasıl hareket edeceğini söyler
 def cisim_bulunamazsa():
-    # Biraz daha düşün TODO cisim bulunamazsa ne yapılacak?
     gemi.sola_don()
 
 
+# Tespit edilen görüntünün merkezini alarak o noktaya doğru ilerler
 def goruntuye_gore_hareket(img, merkez):
     genislik = img.shape[1]
 
@@ -43,6 +45,8 @@ def goruntuye_gore_hareket(img, merkez):
     return
 
 
+# Görüntüdeki en büyük gemiyi (yesili) tespit eder ve o yönde hareket eder
+# Eğer gemi bulunamazsa cisim_bulunamazsa() fonksiyonunu çağırır
 def gemi_bul_ve_hareket_et(resim):
     gemiResim = resim.copy()
     gemiMaske = cvYar.maske_olustur(gemiResim, cvYar.renk_siniri["gemi"], cvYar.cekirdek)
@@ -60,10 +64,8 @@ def gemi_bul_ve_hareket_et(resim):
     return gemiResim
 
 
+# Geminin römorka alınmak için uygun konumda olup olmadığını tespit eder
 def gemi_bulundu(resim):
-    # mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_CAPRAZ, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
-    # if mesafe < sbt.MESAFE_CAPRAZ_SU:
-    #     return True
     gemiResim = resim.copy()
     gemiMaske = cvYar.maske_olustur(gemiResim, cvYar.renk_siniri["gemi"], cvYar.cekirdek)
     gemiAlanlar = cvYar.cerceve_ciz(gemiResim, gemiMaske)
@@ -71,11 +73,13 @@ def gemi_bulundu(resim):
     # cismin etrafına dikdörtgen çizme
     cv2.rectangle(gemiResim, (enBuyukGemi['solUstKose'][0], enBuyukGemi['solUstKose'][1]),
                   (enBuyukGemi["sagAltKose"][0], enBuyukGemi["sagAltKose"][1]), (255, 0, 0), 3)
-    if sbt.GEMI_ALMA_KONUM_PIXEL[0][0] < enBuyukGemi['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[0][1] and sbt.GEMI_ALMA_KONUM_PIXEL[1][0] < enBuyukGemi['merkez'][1] < sbt.GEMI_ALMA_KONUM_PIXEL[1][1]:
+    if sbt.GEMI_ALMA_KONUM_PIXEL[0][0] < enBuyukGemi['merkez'][0] < sbt.GEMI_ALMA_KONUM_PIXEL[0][1] and \
+            sbt.GEMI_ALMA_KONUM_PIXEL[1][0] < enBuyukGemi['merkez'][1] < sbt.GEMI_ALMA_KONUM_PIXEL[1][1]:
         return True
     return False
 
 
+# Kapıyı (2 en büyük maviyi) tespit eder ve kapıya doğru hareket eder
 def kapi_bul_ve_hareket_et(resim, tirman=False):
     kapiResim = resim.copy()
     kapiMaske = cvYar.maske_olustur(kapiResim, cvYar.renk_siniri["kapi"], cvYar.cekirdek)
@@ -95,6 +99,7 @@ def kapi_bul_ve_hareket_et(resim, tirman=False):
     return kapiResim
 
 
+# Duvardan kaçmak için yapılacak işlemleri gerçekleştirir
 def duvardan_kac():
     gemi.geri()
     time.sleep(1)
@@ -102,6 +107,8 @@ def duvardan_kac():
     time.sleep(1)
 
 
+# Sensör yardımıyla duvarları tespit eder ve çarpmamak için işlem gerçekleştirir
+# Bu fonksiyonda görüntü işleme ile duvar tespit edilmiş fakat herhangi bir işlem yapılmamıştır
 def duvar_bul_ve_carpma(resim):
     duvarResim = resim.copy()
     duvarMaske = cvYar.maske_olustur(duvarResim, cvYar.renk_siniri["duvar"], cvYar.cekirdek)
@@ -116,6 +123,7 @@ def duvar_bul_ve_carpma(resim):
     return duvarResim
 
 
+# Sensörle ortalama mesafeyi tespit eder
 def sensor_mesafe_bul(sensorPin, kontrolSayisi):
     ort = 0
     for i in range(kontrolSayisi):
@@ -124,6 +132,7 @@ def sensor_mesafe_bul(sensorPin, kontrolSayisi):
     return ort
 
 
+# Römorktaki gemileri boşaltır
 def gemi_bosalt():
     # Öndeki çubuk yukarı kalkar
     step.tam_tur_don(-sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
@@ -135,6 +144,7 @@ def gemi_bosalt():
     step.tam_tur_don(sbt.TUR_SAYISI_BOSALTMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_BOSALTMA_CUBUGU)
 
 
+# Gemiyi römorka taşır
 def gemi_topla():
     gemi.dur()
     time.sleep(0.1)
@@ -142,10 +152,12 @@ def gemi_topla():
     step.tam_tur_don(-sbt.TUR_SAYISI_DOLDURMA_CUBUGU, sbt.STEP_MOTOR_BEKLEME_SURESI, sbt.PIN_STEP_DOLDURMA_CUBUGU)
 
 
+# Yürüyen banda tırmanır
 def banda_tirman(resim):
     return kapi_bul_ve_hareket_et(resim)
 
 
+# Yürüyen bandın dibine kadar gelindiğini haber verir
 def bant_bulundu():
     mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_YATAY, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
     if mesafe < sbt.MESAFE_YATAY_DUVAR:
@@ -153,6 +165,7 @@ def bant_bulundu():
     return False
 
 
+# Suru (kırmızıyı) tespit eder ve ona doğru hareket eder
 def sur_bul_ve_hareket_et(resim):
     surResim = resim.copy()
     img_hsv = cv2.cvtColor(surResim, cv2.COLOR_BGR2HSV)
@@ -179,6 +192,7 @@ def sur_bul_ve_hareket_et(resim):
     return surResim
 
 
+# Surun yakında olup olmadığını tespit eder
 def sur_bulundu():
     mesafe = sensor_mesafe_bul(sbt.PIN_SENSOR_YATAY, sbt.SENSOR_OLCUMU_KONTROL_SAYISI)
     if mesafe < sbt.MESAFE_YATAY_DUVAR:
@@ -186,7 +200,7 @@ def sur_bulundu():
     return False
 
 
-# TODO Top atma eklenecek
+# Sura doğru top atar
 def top_at():
     dc.pin_ayarla(19, 21, 23)
     dc.ileri()

@@ -1,7 +1,9 @@
+# Mesafe sensörüyle rahatça işlem yapabilmek için oluşturulmuş modül
 import RPi.GPIO as GPIO
 import time
 
 
+# Mesafe sensörünün bağlı olduğu pinleri ayarla
 def pin_ayarla(pinler):
     triggerPin = pinler[0]
     echoPin = pinler[1]
@@ -12,6 +14,7 @@ def pin_ayarla(pinler):
     GPIO.output(triggerPin, False)
 
 
+# Dalga gönder, gelmesini bekle, arada geçen zamanı ölç
 def dalga_git_gel(pinler):
     triggerPin = pinler[0]
     echoPin = pinler[1]
@@ -29,10 +32,13 @@ def dalga_git_gel(pinler):
     return dalga_gelis - dalga_gonderis
 
 
+# Dalga gidiş-gelişi arasındaki mesafeden mesafeyi hesapla
+# Bu işlem dalganın havada yayılma hızına göre yapılır.
 def mesafe_hesapla(sure):
     mesafe = sure * 17150
     return round(mesafe, 2)
 
 
+# Tek fonksiyonla mesafeyi ölç ve döndür
 def mesafe_olc(pinler):
     return mesafe_hesapla(dalga_git_gel(pinler))

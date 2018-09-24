@@ -1,8 +1,6 @@
-# Römork -> +1 -> Aşağıya
-# Boşaltma +1-> yıkarıya
-# doldurma +1 -> yukarı
+# Program genelinde kullanılan sabitlerin ek yerde toplanması için oluşturulmuş modül
 
-# KOVA İÇİN PINLER (HPIO.BOARD)
+# KOVA İÇİN PINLER (GPIO.BOARD)
 SAG_DC_MOTOR_PIN = [3, 5, 7]
 SOL_DC_MOTOR_PIN = [11, 13, 15]
 PIN_STEP_ROMORK = [31, 33, 35, 37]
@@ -21,7 +19,6 @@ EN_KUCUK_SUR_PIXEL_ALANI = 2000
 STEP_MOTOR_BEKLEME_SURESI = 1
 GEMI_ALMA_KONUM_PIXEL = [[170,195],[200,215]]
 
-# TODO Sabitlerin değerleri ölçülecek
 MAX_GEMI_SAYISI = 4
 BOSALTMA_SAYISI = 1
 DIK_SU_MESAFESI = 26
@@ -29,16 +26,6 @@ BANT_TAM_TUR_SAYISI = 6
 SENSOR_OLCUMU_KONTROL_SAYISI = 10
 MESAFE_YATAY_DUVAR = 30
 MESAFE_CAPRAZ_SU = 45
-# TODO Steplerin tur sayıları ölçülecek, römork tamam, doldurma tamam,
 TUR_SAYISI_ROMORK = 4.5
 TUR_SAYISI_BOSALTMA_CUBUGU = 1.7
 TUR_SAYISI_DOLDURMA_CUBUGU = 4.5
-
-# # BORU İÇİN PINLER (GPIO.BOARD)
-# SAG_DC_MOTOR_PIN = [3, 5, 7]
-# SOL_DC_MOTOR_PIN = [11, 13, 15]
-# PIN_BANT = [31, 33, 35, 37]
-# PIN_ON_KOL = [32, 36, 38, 40]
-# PIN_SENSOR_CAPRAZ = [8,10]
-# PIN_SENSOR_DIKEY = [16,18]
-# # SERVO_PIN = 12

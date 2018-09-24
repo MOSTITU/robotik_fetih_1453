@@ -1,5 +1,3 @@
-# TODO step motorların yönünü kontrole et
-# TODO DC motor yönlerini kontrol et
 # Kullanılan pinler ->
 # Stepler -> [31, 33, 35, 37], [32, 36, 38, 40]
 # Sensörler -> [16,18] , [11,13]
@@ -88,8 +86,6 @@ while True:
             else:
                 gemiTopla = True
                 gemiBosalt = False
-                # Şu an gerek yok TODO Eğer karşıya geçmediyse duvardan kaç
-                # Şu an gerek yok TODO Eğer karşıya geçtiyse karsidayim=True
                 th.duvardan_kac()
 
     if bandaTirman:

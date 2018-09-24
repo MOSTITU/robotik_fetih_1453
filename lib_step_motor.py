@@ -1,8 +1,9 @@
+# Step motorun programda rahatça kullanılabilmesi için oluşturulmuş modüldür.
 import RPi.GPIO as GPIO
 import time
 
 
-# Motor pinlerini ayarlar
+# Servo motorun pinlerini ayarlar
 def motor_pinlerini_ayarla(motorPinleri):
     for pin in motorPinleri:
         GPIO.setup(pin, GPIO.OUT)

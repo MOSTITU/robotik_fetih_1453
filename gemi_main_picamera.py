@@ -103,7 +103,6 @@ for resimKaresi in kamera.capture_continuous(resimBellegi, format="bgr", use_vid
                 gemiTopla = True
                 gemiBosalt = False
 
-    # TODO bandaTirman ne zaman True olacak?
     if bandaTirman:
         print("Banda tırmanma aşaması...")
         kapiResim = th.banda_tirman(anaResim)
